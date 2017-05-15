@@ -1,5 +1,7 @@
 using System;
 using System.Diagnostics;
+using System.Windows;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using Olbert.Wix.messages;
@@ -60,14 +62,15 @@ namespace Olbert.Wix.ViewModels
 
         public RelayCommand HelpUrlClicked { get; }
 
-        public override ButtonsViewModel GetButtonsViewModel()
+        public override ViewModelBase GetButtonsViewModel()
         {
-            return new ButtonsViewModel()
-            {
-                CancelVisible = false,
-                PreviousVisible = false,
-                NextText = "Finish"
-            };
+            var retVal = new StandardButtonsViewModel();
+
+            retVal.CancelViewModel.Visibility = Visibility.Collapsed;
+            retVal.PreviousViewModel.Visibility = Visibility.Collapsed;
+            retVal.NextViewModel.Text = "Finish";
+
+            return retVal;
         }
 
         private void HelpUrlClickedHandler()

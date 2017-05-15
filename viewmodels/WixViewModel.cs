@@ -1,46 +1,45 @@
 using System;
-using System.Windows;
+using System.IO;
+using System.Reflection;
 using System.Windows.Controls;
 using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Tools.WindowsInstallerXml.Bootstrapper;
+using Olbert.JumpForJoy.WPF;
 using Olbert.Wix.messages;
-using Olbert.Wix.Models;
 
 namespace Olbert.Wix.ViewModels
 {
-    public class WixViewModel : ViewModelBase
+    public class WixViewModel : ViewModelBase, IWixViewModel
     {
+        public event EventHandler<EngineActionEventArgs> Action;
+        public event EventHandler CancelAction;
+
         private InstallState _state;
-        private string _mesg;
-        private WixModel _model;
         private string _windowTitle;
         private UserControl _curPanel;
         private UserControl _curButtons;
+        private bool _bundleInstalled;
 
         protected WixViewModel()
         {
-            _model = new ViewModelLocator().Model ?? throw new NullReferenceException( nameof(WixModel) );
+            WindowTitle = "Application Installer";
 
-            _model.Application.DetectPackageComplete += DetectPackageCompleteHandler;
-            _model.Application.PlanComplete += PlanCompleteHandler;
-            _model.Application.ApplyBegin += ApplyBeginHandler;
-            _model.Application.ApplyComplete += ApplyCompleteHandler;
-            _model.Application.ExecutePackageBegin += ExecutePackageBeginHandler;
-            _model.Application.ExecutePackageComplete += ExecutePackageCompleteHandler;
-
-            InstallCommand = new RelayCommand<Window>( StartInstallation, (x) => _state == InstallState.NotPresent );
-
-            UninstallCommand = new RelayCommand(() => _model.PlanAction(LaunchAction.Uninstall),
-                () => _state == InstallState.Present);
-
-            CancelCommand = new RelayCommand( CancelCommandHandler, () => _state != InstallState.Canceled );
-
-            WindowTitle = _model.Application.BundleProperties.DisplayName;
+            BundleProperties = WixBundleProperties.Load() ??
+                               throw new NullReferenceException( nameof(BundleProperties) );
 
             Messenger.Default.Register<PanelButtonClick>(this, PanelButtonClickHandler);
         }
+
+        public WixBundleProperties BundleProperties { get; private set; }
+
+        public InstallState InstallState
+        {
+            get => _state;
+            set => Set<InstallState>(ref _state, value);
+        }
+
+        public EngineState EngineState { get; set; }
 
         public string WindowTitle
         {
@@ -60,118 +59,89 @@ namespace Olbert.Wix.ViewModels
             set => Set<UserControl>( ref _curButtons, value );
         }
 
-        public RelayCommand<Window> InstallCommand { get; }
-        public RelayCommand UninstallCommand { get; }
-        public RelayCommand CancelCommand { get; }
-
-        public string Message
+        public bool BundleInstalled
         {
-            get => _mesg;
-            set => Set<string>( ref _mesg, value );
+            get => _bundleInstalled;
+            set => Set<bool>( ref _bundleInstalled, value );
         }
 
-        public InstallState State
+        public CachingInfo CachingInfo { get; set; }
+        public ExecutionInfo ExecutionInfo { get; set; }
+
+        protected virtual void MoveNext()
         {
-            get => _state;
+        }
 
-            set
+        protected virtual void MovePrevious()
+        {
+        }
+
+        protected virtual void OnAction( LaunchAction action )
+        {
+            EventHandler<EngineActionEventArgs> handler = Action;
+
+            if( handler != null )
             {
-                Set<InstallState>( ref _state, value );
-                Message = value.ToString();
+                var args = new EngineActionEventArgs { Action = action };
 
-                Refresh();
+                handler.Invoke( this, args );
+
+                if( !args.Processed )
+                    J4JMessageBox.Show( args.Message, "Problem Encountered", "Okay" );
             }
         }
 
-        protected virtual void PanelButtonClickHandler( PanelButtonClick obj )
+        protected virtual void OnCancelInstallation()
         {
-            if( obj == null ) return;
+            EventHandler handler = CancelAction;
 
-            switch( obj.Button )
+            if( handler != null )
             {
-                case PanelButton.Cancel:
-                    OnCancel();
+                handler.Invoke( this, EventArgs.Empty );
+
+                J4JMessageBox.Show( "Cancellation requested", "Installation Message" );
+            }
+        }
+
+        protected string GetEmbeddedTextFile(string fileName, string ns = null)
+        {
+            ns = ns ?? this.GetType().Namespace;
+
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{ns}.{fileName}"))
+            {
+                if (stream == null) return null;
+
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    return reader.ReadToEnd();
+                }
+            }
+        }
+
+        private void PanelButtonClickHandler(PanelButtonClick obj)
+        {
+            if (obj == null) return;
+
+            switch (obj.ButtonID)
+            {
+                case StandardButtonsViewModel.CancelButtonID:
+                    if (J4JMessageBox.Show(
+                            "Are you sure you want to cancel the installation?",
+                            "Please Confirm",
+                            "Yes", "No") == 1)
+                        OnCancelInstallation();
+
                     break;
 
-                case PanelButton.Next:
-                    OnMoveNext();
+                case StandardButtonsViewModel.NextButtonID:
+                    MoveNext();
                     break;
 
-                case PanelButton.Previous:
-                    OnMovePrevious();
+                case StandardButtonsViewModel.PreviousButtonID:
+                    MovePrevious();
                     break;
             }
         }
 
-        protected virtual void OnMoveNext()
-        {
-        }
-
-        protected virtual void OnMovePrevious()
-        {
-        }
-
-        protected virtual void OnCancel()
-        {
-        }
-
-        private void Refresh()
-        {
-            WixApp.Dispatcher.Invoke( (Action) ( () =>
-            {
-                InstallCommand.RaiseCanExecuteChanged();
-                UninstallCommand.RaiseCanExecuteChanged();
-                CancelCommand.RaiseCanExecuteChanged();
-            } ) );
-        }
-
-        private void StartInstallation( Window obj )
-        {
-            if( obj == null ) return;
-
-            _model.SetWindowHandle( obj );
-            _model.PlanAction( LaunchAction.Install );
-        }
-
-        private void ExecutePackageCompleteHandler(object sender, ExecutePackageCompleteEventArgs e)
-        {
-            if( _state == InstallState.Canceled ) e.Result = Result.Cancel;
-        }
-
-        private void ExecutePackageBeginHandler(object sender, ExecutePackageBeginEventArgs e)
-        {
-            if( _state == InstallState.Canceled ) e.Result = Result.Cancel;
-        }
-
-        private void ApplyBeginHandler(object sender, ApplyBeginEventArgs e)
-        {
-            _state=InstallState.Applying;
-        }
-
-        private void ApplyCompleteHandler(object sender, ApplyCompleteEventArgs e)
-        {
-            _model.FinalResult = e.Status;
-            WixApp.Dispatcher.InvokeShutdown();
-        }
-
-        private void PlanCompleteHandler( object sender, PlanCompleteEventArgs e )
-        {
-            if( _state == InstallState.Canceled ) WixApp.Dispatcher.InvokeShutdown();
-            else _model.ApplyAction();
-        }
-
-        private void DetectPackageCompleteHandler( object sender, DetectPackageCompleteEventArgs e )
-        {
-            if( e.PackageId.Equals( "MyInstaller.msi", StringComparison.OrdinalIgnoreCase ) )
-                _state = e.State == PackageState.Present ? InstallState.Present : InstallState.NotPresent;
-        }
-
-        private void CancelCommandHandler()
-        {
-            _model.Log( "Cancelling..." );
-
-            if( _state == InstallState.Applying ) _state = InstallState.Canceled;
-            else WixApp.Dispatcher.InvokeShutdown();
-        }
     }
 }

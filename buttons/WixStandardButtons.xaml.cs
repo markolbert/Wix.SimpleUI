@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Olbert.Wix
+namespace Olbert.Wix.buttons
 {
     /// <summary>
-    /// Interaction logic for WixNextPreviousCancelButtons.xaml
+    /// Interaction logic for WixStandardButtons.xaml
     /// </summary>
-    public partial class WixNextPreviousCancelButtons : UserControl
+    public partial class WixStandardButtons : UserControl
     {
-        public WixNextPreviousCancelButtons()
+        public WixStandardButtons()
         {
             InitializeComponent();
         }

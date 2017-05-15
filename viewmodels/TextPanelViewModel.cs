@@ -1,4 +1,7 @@
-﻿namespace Olbert.Wix.ViewModels
+﻿using System.Windows;
+using GalaSoft.MvvmLight;
+
+namespace Olbert.Wix.ViewModels
 {
     public class TextPanelViewModel : PanelViewModel
     {
@@ -10,9 +13,9 @@
             set => Set<string>( ref _text, value );
         }
 
-        public override ButtonsViewModel GetButtonsViewModel()
+        public override ViewModelBase GetButtonsViewModel()
         {
-            return new ButtonsViewModel { PreviousVisible = false };
+            return new StandardButtonsViewModel();
         }
     }
 }

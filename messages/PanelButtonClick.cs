@@ -2,11 +2,11 @@
 {
     public class PanelButtonClick
     {
-        public PanelButtonClick( PanelButton button )
+        public PanelButtonClick( string buttonID )
         {
-            Button = button;
+            ButtonID = buttonID;
         }
 
-        public PanelButton Button { get; }
+        public string ButtonID { get; }
     }
 }

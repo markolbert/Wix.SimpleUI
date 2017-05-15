@@ -1,14 +1,16 @@
-﻿namespace Olbert.Wix.messages
+﻿using System.Windows;
+
+namespace Olbert.Wix.messages
 {
     public class PanelButtonVisibility
     {
-        public PanelButtonVisibility( PanelButton button, bool isVisible )
+        public PanelButtonVisibility( string buttonID, Visibility visibility )
         {
-            Button = button;
-            IsVisible = isVisible;
+            ButtonID = buttonID;
+            Visibility = visibility;
         }
 
-        public PanelButton Button { get; }
-        public bool IsVisible { get; }
+        public string ButtonID { get; }
+        public Visibility Visibility { get; }
     }
 }

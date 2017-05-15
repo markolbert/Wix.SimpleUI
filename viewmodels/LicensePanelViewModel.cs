@@ -1,3 +1,5 @@
+using System.Windows;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
 using Olbert.Wix.messages;
 
@@ -5,23 +7,28 @@ namespace Olbert.Wix.ViewModels
 {
     public class LicensePanelViewModel : TextPanelViewModel
     {
-        private bool _accepted;
+        private Visibility _accepted;
 
-        public bool Accepted
+        public Visibility Accepted
         {
             get => _accepted;
 
             set
             {
-                Set<bool>( ref _accepted, value );
+                Set<Visibility>( ref _accepted, value );
 
-                Messenger.Default.Send<PanelButtonVisibility>( new PanelButtonVisibility( PanelButton.Next, value ) );
+                Messenger.Default.Send<PanelButtonVisibility>( new PanelButtonVisibility( StandardButtonsViewModel.NextButtonID, value ) );
             }
         }
 
-        public override ButtonsViewModel GetButtonsViewModel()
+        public override ViewModelBase GetButtonsViewModel()
         {
-            return new ButtonsViewModel() { NextVisible = false, NextText = "Accepted >" };
+            var retVal = (StandardButtonsViewModel) base.GetButtonsViewModel();
+
+            retVal.NextViewModel.Visibility = Visibility.Collapsed;
+            retVal.NextViewModel.Text = "Accepted >";
+
+            return retVal;
         }
     }
 }

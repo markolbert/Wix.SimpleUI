@@ -11,6 +11,6 @@ namespace Olbert.Wix.ViewModels
 {
     public abstract class PanelViewModel : ViewModelBase
     {
-        public abstract ButtonsViewModel GetButtonsViewModel();
+        public abstract ViewModelBase GetButtonsViewModel();
     }
 }

@@ -8,7 +8,7 @@
     <OutputType>library</OutputType>
     <RootNamespace>Olbert.Wix</RootNamespace>
     <AssemblyName>Olbert.Wix.MinimalUI</AssemblyName>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -110,7 +110,15 @@
     <Compile Include="app-xml\WixPackageFeatureInfo.cs" />
     <Compile Include="app-xml\WixPackageProperties.cs" />
     <Compile Include="app-xml\WixPayloadProperties.cs" />
+    <Compile Include="buttons\WixButton.cs" />
+    <Compile Include="buttons\WixStandardButtons.xaml.cs">
+      <DependentUpon>WixStandardButtons.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CachingInfo.cs" />
+    <Compile Include="EngineState.cs" />
+    <Compile Include="ExecutionInfo.cs" />
     <Compile Include="messages\PanelButton.cs" />
+    <Compile Include="messages\WixEngineCommand.cs" />
     <Compile Include="messages\PanelButtonVisibility.cs" />
     <Compile Include="panels\WixFinish.xaml.cs">
       <DependentUpon>WixFinish.xaml</DependentUpon>
@@ -118,12 +126,11 @@
     <Compile Include="panels\WixLicense.xaml.cs">
       <DependentUpon>WixLicense.xaml</DependentUpon>
     </Compile>
-    <Compile Include="viewmodels\ButtonsViewModel.cs" />
-    <Compile Include="btn-bars\WixNextPreviousCancelButtons.xaml.cs">
-      <DependentUpon>WixNextPreviousCancelButtons.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="viewmodels\EngineActionEventArgs.cs" />
+    <Compile Include="viewmodels\IWixViewModel.cs" />
+    <Compile Include="viewmodels\StandardButtonsViewModel.cs" />
+    <Compile Include="viewmodels\WixButtonViewModel.cs" />
     <Compile Include="messages\PanelButtonClick.cs" />
-    <Compile Include="models\WixModel.cs" />
     <Compile Include="panels\IWixPanel.cs" />
     <Compile Include="panels\WixTextScroller.xaml.cs">
       <DependentUpon>WixTextScroller.xaml</DependentUpon>
@@ -148,18 +155,17 @@
     <Compile Include="viewmodels\WixViewModel.cs" />
     <Compile Include="viewmodels\PanelViewModel.cs" />
     <Compile Include="viewmodels\TextPanelViewModel.cs" />
-    <Compile Include="viewmodels\TextScrollerViewModel.cs" />
-    <Compile Include="viewmodels\ViewModelLocator.cs" />
+    <Compile Include="viewmodels\WixLocator.cs" />
     <Compile Include="views\WixWindow.xaml.cs">
       <DependentUpon>WixWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WixAutofacModule.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="app.config" />
-    <None Include="BootstrapperCore.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -168,7 +174,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="btn-bars\WixNextPreviousCancelButtons.xaml">
+    <Page Include="buttons\WixStandardButtons.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -184,6 +190,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="views\WixWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -193,6 +203,10 @@
     <Resource Include="assets\j4jtransparent.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\j4jUI\j4jUI.csproj">
+      <Project>{a510a9cd-e6dc-40e1-b7da-2969448691bb}</Project>
+      <Name>j4jUI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WpfConverters\WpfConverters.csproj">
       <Project>{b69f06bf-2151-46d6-9628-5235699320d3}</Project>
       <Name>WpfConverters</Name>
@@ -200,4 +214,18 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>rd /s /q "$(TargetDir)de"
+rd /s /q "$(TargetDir)es"
+rd /s /q "$(TargetDir)fr"
+rd /s /q "$(TargetDir)hu"
+rd /s /q "$(TargetDir)it"
+rd /s /q "$(TargetDir)pt-BR"
+rd /s /q "$(TargetDir)ro"
+rd /s /q "$(TargetDir)ru"
+rd /s /q "$(TargetDir)sv"
+rd /s /q "$(TargetDir)zh-Hans"
+del /s /q "$(TargetDir)*.xml"
+if $(Configuration) == Release (del /s /q "$(TargetDir)*.pdb")</PostBuildEvent>
+  </PropertyGroup>
 </Project>
