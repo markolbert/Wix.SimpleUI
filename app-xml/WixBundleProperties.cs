@@ -37,6 +37,9 @@ namespace Olbert.Wix
             if( targetType == typeof(Version) )
                 retVal = Version.TryParse( text, out Version version ) ? version : new Version();
 
+            if( targetType == typeof(Guid) )
+                retVal = Guid.TryParse( text, out Guid guid ) ? guid : new Guid();
+                    
             if( targetType == typeof(Display) )
             {
                 if( int.TryParse( text, out int displayVal ) ) retVal = (Display) displayVal;

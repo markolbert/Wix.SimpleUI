@@ -8,7 +8,7 @@ using Serilog;
 
 namespace Olbert.Wix
 {
-    public class WixApp : BootstrapperApplication
+    public abstract class WixApp : BootstrapperApplication
     {
         private static Dispatcher Dispatcher { get; set; }
 
@@ -16,7 +16,7 @@ namespace Olbert.Wix
         private IntPtr _hwnd = IntPtr.Zero;
         private int _cachingProgress;
 
-        public WixApp()
+        protected WixApp()
         {
             System.Diagnostics.Debugger.Launch();
         }
@@ -25,14 +25,12 @@ namespace Olbert.Wix
         {
             Dispatcher = Dispatcher.CurrentDispatcher;
 
-            WixViewModel = WixLocator.WixViewModel ?? throw new NullReferenceException( "IWixViewModel" );
-
             WixViewModel.CancelAction += _vm_CancelAction;
             WixViewModel.Action += _vm_Action;
 
             Engine.Detect();
 
-            var mainWindow = new WixWindow();
+            var mainWindow = new WixWindow { DataContext = WixViewModel };
             _hwnd = new WindowInteropHelper( mainWindow ).Handle;
 
             mainWindow.Show();
@@ -44,7 +42,7 @@ namespace Olbert.Wix
 
         #region main view model and extensibility points
 
-        protected IWixViewModel WixViewModel { get; private set; }
+        protected abstract IWixViewModel WixViewModel { get; }
 
         protected virtual void OnAction( EngineActionEventArgs args )
         {

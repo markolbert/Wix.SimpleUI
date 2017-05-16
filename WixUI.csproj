@@ -32,12 +32,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Autofac, Version=4.5.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
-      <HintPath>..\packages\Autofac.4.5.0\lib\net45\Autofac.dll</HintPath>
-    </Reference>
-    <Reference Include="Autofac.Extras.CommonServiceLocator, Version=4.0.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
-      <HintPath>..\packages\Autofac.Extras.CommonServiceLocator.4.0.0\lib\portable40-net40+sl5+win8+wp8+wpa81\Autofac.Extras.CommonServiceLocator.dll</HintPath>
-    </Reference>
     <Reference Include="BootstrapperCore, Version=3.0.0.0, Culture=neutral, PublicKeyToken=ce35f76fcda82bad, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Program Files (x86)\WiX Toolset v3.11\SDK\BootstrapperCore.dll</HintPath>
@@ -127,6 +121,7 @@
       <DependentUpon>WixLicense.xaml</DependentUpon>
     </Compile>
     <Compile Include="viewmodels\EngineActionEventArgs.cs" />
+    <Compile Include="viewmodels\FluentButtons.cs" />
     <Compile Include="viewmodels\IWixViewModel.cs" />
     <Compile Include="viewmodels\StandardButtonsViewModel.cs" />
     <Compile Include="viewmodels\WixButtonViewModel.cs" />
@@ -159,7 +154,6 @@
     <Compile Include="views\WixWindow.xaml.cs">
       <DependentUpon>WixWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WixAutofacModule.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

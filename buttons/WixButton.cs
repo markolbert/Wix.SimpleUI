@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using GalaSoft.MvvmLight.Messaging;
 using Olbert.Wix.messages;
 
@@ -13,7 +14,7 @@ namespace Olbert.Wix
     /// Add this XmlNamespace attribute to the root element of the markup file where it is 
     /// to be used:
     ///
-    ///     xmlns:MyNamespace="clr-namespace:Olbert.Wix.buttons"
+    ///     xmlns:MyNamespace="clr-namespace:Olbert.Wix"
     ///
     ///
     /// Step 1b) Using this custom control in a XAML file that exists in a different project.
@@ -37,15 +38,13 @@ namespace Olbert.Wix
     /// </summary>
     public class WixButton : Button
     {
-        static WixButton()
-        {
-            DefaultStyleKeyProperty.OverrideMetadata( typeof(WixButton),
-                new FrameworkPropertyMetadata( typeof(WixButton) ) );
-        }
-
         public static readonly DependencyProperty ButtonIDProperty =
-            DependencyProperty.Register( "ButtonID", typeof(string), typeof(WixButton),
+            DependencyProperty.Register( nameof(ButtonID), typeof(string), typeof(WixButton),
                 new PropertyMetadata( String.Empty ) );
+
+        public static readonly DependencyProperty NormalBackgroundProperty =
+            DependencyProperty.Register("NormalBackground", typeof(Brush), typeof(WixButton),
+                new PropertyMetadata(Brushes.LightGray));
 
         public WixButton()
         {
@@ -56,6 +55,12 @@ namespace Olbert.Wix
         {
             get => (string) GetValue( ButtonIDProperty );
             set => SetValue( ButtonIDProperty, value );
+        }
+
+        public Brush NormalBackground
+        {
+            get => (Brush) GetValue( NormalBackgroundProperty );
+            set => SetValue( NormalBackgroundProperty, value );
         }
 
         private void WixButton_Click(object sender, RoutedEventArgs e)

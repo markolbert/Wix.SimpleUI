@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Media;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
@@ -12,9 +13,13 @@ namespace Olbert.Wix.ViewModels
         private string _text;
         private Visibility _visibility;
         private string _buttonID;
+        private Brush _normalBkgnd;
+        private Brush _hiliteBkgnd;
 
         public WixButtonViewModel()
         {
+            HighlightedBackground = new SolidColorBrush( Colors.Orange );
+
             ButtonClick = new RelayCommand<string>( ButtonClickHandler );
 
             Messenger.Default.Register<PanelButtonVisibility>( this, PanelButtonVisibilityHandler );
@@ -38,6 +43,18 @@ namespace Olbert.Wix.ViewModels
         {
             get => _buttonID;
             set => Set<string>( ref _buttonID, value );
+        }
+
+        public Brush NormalBackground
+        {
+            get => _normalBkgnd;
+            set => Set<Brush>(ref _normalBkgnd, value);
+        }
+
+        public Brush HighlightedBackground
+        {
+            get => _hiliteBkgnd;
+            set => Set<Brush>(ref _hiliteBkgnd, value);
         }
 
         private void ButtonClickHandler( string buttonID )

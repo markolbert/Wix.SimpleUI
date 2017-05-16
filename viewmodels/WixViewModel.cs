@@ -87,7 +87,10 @@ namespace Olbert.Wix.ViewModels
                 handler.Invoke( this, args );
 
                 if( !args.Processed )
-                    J4JMessageBox.Show( args.Message, "Problem Encountered", "Okay" );
+                    new J4JMessageBox().Title( "Problem Encountered" )
+                        .Message( args.Message )
+                        .ButtonText( "Okay" )
+                        .ShowMessageBox();
             }
         }
 
@@ -99,7 +102,10 @@ namespace Olbert.Wix.ViewModels
             {
                 handler.Invoke( this, EventArgs.Empty );
 
-                J4JMessageBox.Show( "Cancellation requested", "Installation Message" );
+                new J4JMessageBox().Title( "Installation Message" )
+                    .Message( "Cancellation requested" )
+                    .ButtonText( "Okay" )
+                    .ShowMessageBox();
             }
         }
 
@@ -107,7 +113,7 @@ namespace Olbert.Wix.ViewModels
         {
             ns = ns ?? this.GetType().Namespace;
 
-            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{ns}.{fileName}"))
+            using (Stream stream = Assembly.GetCallingAssembly().GetManifestResourceStream($"{ns}.{fileName}"))
             {
                 if (stream == null) return null;
 
@@ -125,11 +131,12 @@ namespace Olbert.Wix.ViewModels
             switch (obj.ButtonID)
             {
                 case StandardButtonsViewModel.CancelButtonID:
-                    if (J4JMessageBox.Show(
-                            "Are you sure you want to cancel the installation?",
-                            "Please Confirm",
-                            "Yes", "No") == 1)
-                        OnCancelInstallation();
+                    var msgBox = new J4JMessageBox().Title( "Please Confirm" )
+                        .Message( "Are you sure you want to cancel the installation?" )
+                        .DefaultButton( 1 )
+                        .ButtonText( "Yes", "No" );
+
+                    if (msgBox.ShowMessageBox() == 1) OnCancelInstallation();
 
                     break;
 

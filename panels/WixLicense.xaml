@@ -9,10 +9,6 @@
              d:DesignHeight="200" d:DesignWidth="200">
     <DockPanel LastChildFill="True">
 
-        <DockPanel.DataContext>
-            <DataTemplate DataType="{x:Type vm:LicensePanelViewModel}" />
-        </DockPanel.DataContext>
-
         <StackPanel DockPanel.Dock="Bottom"
                     Orientation="Horizontal"
                     Margin="0 5 0 0">

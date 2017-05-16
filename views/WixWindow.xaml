@@ -8,9 +8,9 @@
         Title="{Binding WindowTitle}" Height="300" Width="450.667">
 
     <Grid Background="Gainsboro">
-        <Grid.DataContext>
-            <DataTemplate DataType="{x:Type vm:WixViewModel}"></DataTemplate>
-        </Grid.DataContext>
+        <!--<Grid.DataContext>
+            <DataTemplate DataType="{x:Type vm:WixViewModel}"/>
+        </Grid.DataContext>-->
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>

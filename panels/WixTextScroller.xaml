@@ -10,10 +10,6 @@
     
     <DockPanel LastChildFill="True">
         
-        <DockPanel.DataContext>
-            <DataTemplate DataType="{x:Type vm:TextPanelViewModel}" />
-        </DockPanel.DataContext>
-        
         <ScrollViewer DockPanel.Dock="Top">
             <xctk:RichTextBox Text="{Binding Text}"/>
         </ScrollViewer>

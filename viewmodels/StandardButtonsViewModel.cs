@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Media;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
@@ -23,21 +24,24 @@ namespace Olbert.Wix.ViewModels
             {
                 ButtonID = PreviousButtonID,
                 Text = "< Previous",
-                Visibility = Visibility.Visible
+                Visibility = Visibility.Visible,
+                NormalBackground = (SolidColorBrush) new BrushConverter().ConvertFrom( "#bb911e" )
             };
 
             NextViewModel = new WixButtonViewModel
             {
                 ButtonID = NextButtonID,
                 Text = "Next >",
-                Visibility = Visibility.Visible
+                Visibility = Visibility.Visible,
+                NormalBackground = (SolidColorBrush) new BrushConverter().ConvertFrom( "#252315" )
             };
 
             CancelViewModel = new WixButtonViewModel
             {
                 ButtonID = CancelButtonID,
                 Text = "Cancel",
-                Visibility = Visibility.Visible
+                Visibility = Visibility.Visible,
+                NormalBackground = (SolidColorBrush) new BrushConverter().ConvertFrom( "#bc513e" )
             };
         }
 
