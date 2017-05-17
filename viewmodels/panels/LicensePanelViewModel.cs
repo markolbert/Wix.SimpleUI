@@ -7,17 +7,18 @@ namespace Olbert.Wix.ViewModels
 {
     public class LicensePanelViewModel : TextPanelViewModel
     {
-        private Visibility _accepted;
+        private bool _accepted;
 
-        public Visibility Accepted
+        public bool Accepted
         {
             get => _accepted;
 
             set
             {
-                Set<Visibility>( ref _accepted, value );
+                Set<bool>( ref _accepted, value );
 
-                Messenger.Default.Send<PanelButtonVisibility>( new PanelButtonVisibility( StandardButtonsViewModel.NextButtonID, value ) );
+                Messenger.Default.Send<PanelButtonVisibility>( new PanelButtonVisibility(
+                    StandardButtonsViewModel.NextButtonID, value ? Visibility.Visible : Visibility.Collapsed ) );
             }
         }
 

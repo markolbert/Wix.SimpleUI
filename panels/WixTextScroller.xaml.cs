@@ -12,14 +12,15 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Olbert.Wix.ViewModels;
 
 namespace Olbert.Wix.panels
 {
-    /// <summary>
-    /// Interaction logic for WixTextScroller.xaml
-    /// </summary>
+    [ WixPanel( PanelID, typeof(TextPanelViewModel) ) ]
     public partial class WixTextScroller : UserControl
     {
+        public const string PanelID = "textscroller";
+
         public WixTextScroller()
         {
             InitializeComponent();

@@ -8,6 +8,7 @@
              xmlns:command="http://www.galasoft.ch/mvvmlight"
              xmlns:vm="clr-namespace:Olbert.Wix.ViewModels"
              xmlns:conv="clr-namespace:Olbert.Wpf;assembly=Olbert.Wpf.Converters"
+             FontSize="12pt"
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="200">
 
@@ -17,23 +18,21 @@
 
     <DockPanel LastChildFill="True">
 
-        <DockPanel.DataContext>
-            <DataTemplate DataType="{x:Type vm:FinishPanelViewModel}" />
-        </DockPanel.DataContext>
-
         <StackPanel DockPanel.Dock="Bottom"
                     Orientation="Horizontal"
                     Visibility="{Binding LaunchAppVisible, Converter={StaticResource StringVisibilityConverter}}"
-                    Margin="0 5 0 0">
-            <CheckBox IsChecked="{Binding LaunchApp}" />
+                    Margin="5">
+            <CheckBox IsChecked="{Binding LaunchApp}"
+                      VerticalAlignment="Center"
+                      Margin="0,0,5,0"/>
             <TextBlock Text="Launch App"
-                       Padding="5 0 0 0"/>
+                       VerticalAlignment="Center"/>
         </StackPanel>
 
         <StackPanel DockPanel.Dock="Bottom"
                     Orientation="Horizontal"
                     Visibility="{Binding HelpUrlVisible, Converter={StaticResource StringVisibilityConverter}}"
-                    Margin="0 5 0 0">
+                    Margin="5">
             <TextBlock>
                 <Hyperlink>
                     <i:Interaction.Triggers>
@@ -50,6 +49,7 @@
 
         <TextBlock DockPanel.Dock="Top"
                    TextWrapping="Wrap"
+                   Margin="5"
                    Text="{Binding Text}"/>
     
     </DockPanel>

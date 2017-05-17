@@ -5,13 +5,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:vm="clr-namespace:Olbert.Wix.ViewModels"
+             FontSize="12pt"
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="200">
     
     <DockPanel LastChildFill="True">
         
         <ScrollViewer DockPanel.Dock="Top">
-            <xctk:RichTextBox Text="{Binding Text}"/>
+            <xctk:RichTextBox Text="{Binding Text}"
+                              Margin="5" />
         </ScrollViewer>
     
     </DockPanel>

@@ -16,12 +16,12 @@ using Olbert.Wix.ViewModels;
 
 namespace Olbert.Wix.panels
 {
-    [WixPanel(PanelID, typeof(FinishPanelViewModel))]
-    public partial class WixFinish : UserControl
+    [ WixPanel( PanelID, typeof(DependencyPanelViewModel) ) ]
+    public partial class WixDependencies : UserControl
     {
-        public const string PanelID = "finish";
+        public const string PanelID = "dependencies";
 
-        public WixFinish()
+        public WixDependencies()
         {
             InitializeComponent();
         }

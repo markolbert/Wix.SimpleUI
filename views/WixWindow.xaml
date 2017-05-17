@@ -6,11 +6,12 @@
         xmlns:vm="clr-namespace:Olbert.Wix.ViewModels"
         mc:Ignorable="d"
         Title="{Binding WindowTitle}" Height="300" Width="450.667">
+    
+    <Window.Resources>
+        <BitmapImage x:Key="HisMajesty" UriSource="../assets/j4jtransparent.png"/>
+    </Window.Resources>
 
     <Grid Background="Gainsboro">
-        <!--<Grid.DataContext>
-            <DataTemplate DataType="{x:Type vm:WixViewModel}"/>
-        </Grid.DataContext>-->
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
@@ -22,12 +23,14 @@
         </Grid.ColumnDefinitions>
         
         <Image Grid.Row="0" Grid.Column="0" 
-               Source="/assets/j4jtransparent.png"/>
+               Source="{StaticResource HisMajesty}"/>
         
         <ContentControl Grid.Row="0" Grid.Column="1"
-                        Content="{Binding CurrentPanel}"/>
+                        Padding="5"
+                        Content="{Binding Current.Panel}"/>
         
         <ContentControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
-                        Content="{Binding CurrentButtons}"/>
+                        Padding="5"
+                        Content="{Binding Current.Buttons}"/>
     </Grid>
 </Window>

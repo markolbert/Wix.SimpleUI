@@ -16,12 +16,12 @@ using Olbert.Wix.ViewModels;
 
 namespace Olbert.Wix.panels
 {
-    [WixPanel(PanelID, typeof(FinishPanelViewModel))]
-    public partial class WixFinish : UserControl
+    [WixPanel(PanelID, typeof(ProgressPanelViewModel))]
+    public partial class WixProgress : UserControl
     {
-        public const string PanelID = "finish";
+        public const string PanelID = "progress";
 
-        public WixFinish()
+        public WixProgress()
         {
             InitializeComponent();
         }

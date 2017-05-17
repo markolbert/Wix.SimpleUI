@@ -1,4 +1,4 @@
-﻿namespace Olbert.Wix
+﻿namespace Olbert.Wix.Deprecated
 {
     public class CachingInfo
     {

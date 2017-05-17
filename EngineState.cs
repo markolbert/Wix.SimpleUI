@@ -13,4 +13,14 @@ namespace Olbert.Wix
         ApplyingExecuting,
         ApplyComplete
     }
+
+    public enum EnginePhase
+    {
+        NotStarted,
+        Detect,
+        Plan,
+        Caching,
+        Executing,
+        Finished
+    }
 }

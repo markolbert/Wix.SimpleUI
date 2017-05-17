@@ -124,7 +124,7 @@ namespace Olbert.Wix
                 .Select( pri => new WixMbaPrereqInformation()
                 {
                     LicenseUrl = pri.GetAttribute<string>("LicenseUrl"),
-                    PackageID = pri.GetAttribute<string>("PackageID")
+                    PackageID = pri.GetAttribute<string>("PackageId")
                 } ) );
 
             retVal.Packages.AddRange( xml.Descendants( ManifestNamespace + nameof(WixPackageProperties))
@@ -149,6 +149,10 @@ namespace Olbert.Wix
                     InstallCondition = pp.GetAttribute<string>( "InstallCondition" ),
                     Cache = pp.GetAttribute<YesNoAlways>( "Cache" )
                 } ) );
+
+            retVal.Prerequisites.ForEach( pr => pr.Properties =
+                retVal.Packages
+                    .SingleOrDefault(pkg => pkg.Package.Equals( pr.PackageID, StringComparison.OrdinalIgnoreCase )) );
 
             List<WixPackageFeatureInfo> features = xml.Descendants( ManifestNamespace + nameof(WixPackageFeatureInfo) )
                 .Select( pfi => new WixPackageFeatureInfo()

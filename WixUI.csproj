@@ -114,17 +114,28 @@
     <Compile Include="messages\PanelButton.cs" />
     <Compile Include="messages\WixEngineCommand.cs" />
     <Compile Include="messages\PanelButtonVisibility.cs" />
+    <Compile Include="NativeMethods.cs" />
+    <Compile Include="panels\WixPanelAttribute.cs" />
+    <Compile Include="panels\WixPanels.cs" />
+    <Compile Include="panels\WixProgress.xaml.cs">
+      <DependentUpon>WixProgress.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="panels\WixDependencies.xaml.cs">
+      <DependentUpon>WixDependencies.xaml</DependentUpon>
+    </Compile>
     <Compile Include="panels\WixFinish.xaml.cs">
       <DependentUpon>WixFinish.xaml</DependentUpon>
     </Compile>
     <Compile Include="panels\WixLicense.xaml.cs">
       <DependentUpon>WixLicense.xaml</DependentUpon>
     </Compile>
+    <Compile Include="viewmodels\CurrentPanelInfo.cs" />
     <Compile Include="viewmodels\EngineActionEventArgs.cs" />
-    <Compile Include="viewmodels\FluentButtons.cs" />
+    <Compile Include="viewmodels\buttons\FluentButtons.cs" />
+    <Compile Include="viewmodels\InstallationState.cs" />
     <Compile Include="viewmodels\IWixViewModel.cs" />
-    <Compile Include="viewmodels\StandardButtonsViewModel.cs" />
-    <Compile Include="viewmodels\WixButtonViewModel.cs" />
+    <Compile Include="viewmodels\buttons\StandardButtonsViewModel.cs" />
+    <Compile Include="viewmodels\buttons\WixButtonViewModel.cs" />
     <Compile Include="messages\PanelButtonClick.cs" />
     <Compile Include="panels\IWixPanel.cs" />
     <Compile Include="panels\WixTextScroller.xaml.cs">
@@ -143,13 +154,15 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="viewmodels\panels\DependencyPanelViewModel.cs" />
+    <Compile Include="viewmodels\panels\ProgressPanelViewModel.cs" />
     <Compile Include="WixApp.cs" />
     <Compile Include="viewmodels\InstallState.cs" />
-    <Compile Include="viewmodels\FinishPanelViewModel.cs" />
-    <Compile Include="viewmodels\LicensePanelViewModel.cs" />
+    <Compile Include="viewmodels\panels\FinishPanelViewModel.cs" />
+    <Compile Include="viewmodels\panels\LicensePanelViewModel.cs" />
     <Compile Include="viewmodels\WixViewModel.cs" />
-    <Compile Include="viewmodels\PanelViewModel.cs" />
-    <Compile Include="viewmodels\TextPanelViewModel.cs" />
+    <Compile Include="viewmodels\panels\PanelViewModel.cs" />
+    <Compile Include="viewmodels\panels\TextPanelViewModel.cs" />
     <Compile Include="viewmodels\WixLocator.cs" />
     <Compile Include="views\WixWindow.xaml.cs">
       <DependentUpon>WixWindow.xaml</DependentUpon>
@@ -171,6 +184,14 @@
     <Page Include="buttons\WixStandardButtons.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="panels\WixProgress.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="panels\WixDependencies.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="panels\WixFinish.xaml">
       <Generator>MSBuild:Compile</Generator>
