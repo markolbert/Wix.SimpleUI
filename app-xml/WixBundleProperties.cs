@@ -227,5 +227,16 @@ namespace Olbert.Wix
         public bool PerMachine { get; set; }
         public List<WixMbaPrereqInformation> Prerequisites { get; } = new List<WixMbaPrereqInformation>();
         public List<WixPackageProperties> Packages { get; } = new List<WixPackageProperties>();
+
+        public int GetNumPackagesToInstall()
+        {
+            return Packages
+                .Where( pkg => !Prerequisites.Any(
+                    pr => pr.PackageID.Equals( pkg.Package, StringComparison.OrdinalIgnoreCase ) ) )
+                .Count( pkg =>
+                    pkg.PackageState == PackageState.Absent
+                    || pkg.PackageState == PackageState.Obsolete
+                    || pkg.PackageState == PackageState.Superseded );
+        }
     }
 }

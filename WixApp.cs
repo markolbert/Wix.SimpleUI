@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows.Interop;
 using System.Windows.Threading;
 using Microsoft.Tools.WindowsInstallerXml.Bootstrapper;
+using Olbert.JumpForJoy.WPF;
 using Olbert.Wix.views;
 using Olbert.Wix.ViewModels;
 using Serilog;
@@ -23,6 +24,21 @@ namespace Olbert.Wix
 
         protected override void Run()
         {
+            WixViewModel.LaunchAction = Command.Action;
+
+            if( !WixViewModel.IsActionSupported( WixViewModel.LaunchAction ) )
+            {
+                new J4JMessageBox().Title( "Action Not Supported" )
+                    .Message( $"The requested action ({WixViewModel.LaunchAction}) is not supported" )
+                    .ButtonText( "Okay" )
+                    .ButtonVisibility( true, false, false )
+                    .ShowMessageBox();
+
+                Engine.Quit( _finalResult );
+
+                return;
+            }
+
             Dispatcher = Dispatcher.CurrentDispatcher;
 
             WixViewModel.CancelAction += _vm_CancelAction;
@@ -89,17 +105,7 @@ namespace Olbert.Wix
         {
             base.OnDetectComplete( args );
 
-            WixViewModel.EngineState = EngineState.DetectionComplete;
-
-            var toInstall = WixViewModel.BundleProperties.Packages
-                .Where( pkg => !WixViewModel.BundleProperties.Prerequisites
-                    .Any( pr => pr.PackageID.Equals( pkg.Package, StringComparison.OrdinalIgnoreCase ) ) )
-                .Count( pkg =>
-                    pkg.PackageState == PackageState.Absent
-                    || pkg.PackageState == PackageState.Obsolete
-                    || pkg.PackageState == PackageState.Superseded );
-
-            WixViewModel.InstallState = toInstall == 0 ? InstallState.Present : InstallState.NotPresent;
+            WixViewModel.OnDetectionComplete();
         }
 
         #endregion

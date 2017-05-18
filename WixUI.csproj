@@ -129,6 +129,9 @@
     <Compile Include="panels\WixLicense.xaml.cs">
       <DependentUpon>WixLicense.xaml</DependentUpon>
     </Compile>
+    <Compile Include="panels\WixIntro.xaml.cs">
+      <DependentUpon>WixIntro.xaml</DependentUpon>
+    </Compile>
     <Compile Include="viewmodels\CurrentPanelInfo.cs" />
     <Compile Include="viewmodels\EngineActionEventArgs.cs" />
     <Compile Include="viewmodels\buttons\FluentButtons.cs" />
@@ -156,6 +159,7 @@
     </Compile>
     <Compile Include="viewmodels\panels\DependencyPanelViewModel.cs" />
     <Compile Include="viewmodels\panels\ProgressPanelViewModel.cs" />
+    <Compile Include="viewmodels\panels\IntroPanelViewModel.cs" />
     <Compile Include="WixApp.cs" />
     <Compile Include="viewmodels\InstallState.cs" />
     <Compile Include="viewmodels\panels\FinishPanelViewModel.cs" />
@@ -198,6 +202,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="panels\WixLicense.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="panels\WixIntro.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

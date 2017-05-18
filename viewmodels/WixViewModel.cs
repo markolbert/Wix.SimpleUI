@@ -11,7 +11,7 @@ using Olbert.Wix.panels;
 
 namespace Olbert.Wix.ViewModels
 {
-    public class WixViewModel : ViewModelBase, IWixViewModel
+    public abstract class WixViewModel : ViewModelBase, IWixViewModel
     {
         public event EventHandler StartDetect;
         public event EventHandler<EngineActionEventArgs> Action;
@@ -20,8 +20,6 @@ namespace Olbert.Wix.ViewModels
 
         private InstallState _state;
         private string _windowTitle;
-        //private UserControl _curPanel;
-        //private UserControl _curButtons;
         private bool _bundleInstalled;
         private int _cachePct;
         private int _exePct;
@@ -39,6 +37,13 @@ namespace Olbert.Wix.ViewModels
         }
 
         public WixBundleProperties BundleProperties { get; private set; }
+
+        public virtual bool IsActionSupported( LaunchAction action )
+        {
+            return action == LaunchAction.Unknown;
+        }
+
+        public LaunchAction LaunchAction { get; set; } = LaunchAction.Unknown;
 
         public InstallState InstallState
         {
@@ -83,22 +88,16 @@ namespace Olbert.Wix.ViewModels
             Current.Panel.DataContext = Current.PanelViewModel;
         }
 
-        //public UserControl CurrentPanel
-        //{
-        //    get => _curPanel;
-        //    set => Set<UserControl>( ref _curPanel, value );
-        //}
-
-        //public UserControl CurrentButtons
-        //{
-        //    get => _curButtons;
-        //    set => Set<UserControl>( ref _curButtons, value );
-        //}
-
         public bool BundleInstalled
         {
             get => _bundleInstalled;
             set => Set<bool>( ref _bundleInstalled, value );
+        }
+
+        public virtual void OnDetectionComplete()
+        {
+            EngineState = EngineState.DetectionComplete;
+            InstallState = BundleProperties.GetNumPackagesToInstall() == 0 ? InstallState.Present : InstallState.NotPresent;
         }
 
         public virtual void ReportProgress( string mesg )
@@ -129,13 +128,9 @@ namespace Olbert.Wix.ViewModels
 
         protected PanelViewModel CurrentPanelViewModel { get; set; }
 
-        protected virtual void MoveNext()
-        {
-        }
+        protected abstract void MoveNext();
 
-        protected virtual void MovePrevious()
-        {
-        }
+        protected abstract void MovePrevious();
 
         protected virtual void OnStartDetect()
         {

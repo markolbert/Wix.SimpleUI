@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Controls;
+using Microsoft.Tools.WindowsInstallerXml.Bootstrapper;
 
 namespace Olbert.Wix.ViewModels
 {
@@ -11,6 +12,8 @@ namespace Olbert.Wix.ViewModels
         event EventHandler Finished;
 
         WixBundleProperties BundleProperties { get; }
+        LaunchAction LaunchAction { get; set; }
+        bool IsActionSupported(LaunchAction action);
         InstallState InstallState { get; set; }
         EngineState EngineState { get; set; }
         EnginePhase EnginePhase { get; set; }
@@ -23,6 +26,7 @@ namespace Olbert.Wix.ViewModels
         bool BundleInstalled { get; set; }
         void ReportProgress( string mesg );
         void ReportProgress( int phasePct );
+        void OnDetectionComplete();
         void OnInstallationComplete();
 
         bool IsInDesignMode { get; }
