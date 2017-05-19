@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Windows.Controls;
@@ -13,10 +14,10 @@ namespace Olbert.Wix.ViewModels
 {
     public abstract class WixViewModel : ViewModelBase, IWixViewModel
     {
-        public event EventHandler StartDetect;
-        public event EventHandler<EngineActionEventArgs> Action;
-        public event EventHandler Finished;
-        public event EventHandler CancelAction;
+        //public event EventHandler StartDetect;
+        //public event EventHandler<EngineActionEventArgs> Action;
+        //public event EventHandler Finished;
+        //public event EventHandler CancelAction;
 
         private InstallState _state;
         private string _windowTitle;
@@ -24,8 +25,10 @@ namespace Olbert.Wix.ViewModels
         private int _cachePct;
         private int _exePct;
 
-        protected WixViewModel()
+        protected WixViewModel( IWixApp wixApp )
         {
+            WixApp = wixApp ?? throw new NullReferenceException( nameof(wixApp) );
+
             WindowTitle = "Application Installer";
 
             BundleProperties = WixBundleProperties.Load() ??
@@ -36,19 +39,18 @@ namespace Olbert.Wix.ViewModels
             Messenger.Default.Register<PanelButtonClick>(this, PanelButtonClickHandler);
         }
 
+        protected IWixApp WixApp { get; }
+
         public WixBundleProperties BundleProperties { get; private set; }
 
-        public virtual bool IsActionSupported( LaunchAction action )
-        {
-            return action == LaunchAction.Unknown;
-        }
+        public abstract IEnumerable<LaunchAction> SupportedActions { get; }
 
         public LaunchAction LaunchAction { get; set; } = LaunchAction.Unknown;
 
         public InstallState InstallState
         {
             get => _state;
-            set => Set<InstallState>(ref _state, value);
+            set => Set(ref _state, value);
         }
 
         public EngineState EngineState { get; set; } = EngineState.NotStarted;
@@ -58,7 +60,7 @@ namespace Olbert.Wix.ViewModels
         public string WindowTitle
         {
             get => _windowTitle;
-            set => Set<string>( ref _windowTitle, value );
+            set => Set( ref _windowTitle, value );
         }
 
         public CurrentPanelInfo Current { get; } = new CurrentPanelInfo();
@@ -91,7 +93,7 @@ namespace Olbert.Wix.ViewModels
         public bool BundleInstalled
         {
             get => _bundleInstalled;
-            set => Set<bool>( ref _bundleInstalled, value );
+            set => Set( ref _bundleInstalled, value );
         }
 
         public virtual void OnDetectionComplete()
@@ -132,53 +134,53 @@ namespace Olbert.Wix.ViewModels
 
         protected abstract void MovePrevious();
 
-        protected virtual void OnStartDetect()
-        {
-            EventHandler handler = StartDetect;
-            handler?.Invoke(this, EventArgs.Empty);
-        }
+        //protected virtual void OnStartDetect()
+        //{
+        //    EventHandler handler = StartDetect;
+        //    handler?.Invoke(this, EventArgs.Empty);
+        //}
 
-        protected virtual void OnAction( LaunchAction action )
-        {
-            EventHandler<EngineActionEventArgs> handler = Action;
+        //protected virtual void OnAction( LaunchAction action )
+        //{
+        //    EventHandler<EngineActionEventArgs> handler = Action;
 
-            if( handler != null )
-            {
-                var args = new EngineActionEventArgs { Action = action };
+        //    if( handler != null )
+        //    {
+        //        var args = new EngineActionEventArgs { Action = action };
 
-                handler.Invoke( this, args );
+        //        handler.Invoke( this, args );
 
-                if( !args.Processed )
-                    new J4JMessageBox().Title( "Problem Encountered" )
-                        .Message( args.Message )
-                        .ButtonText( "Okay" )
-                        .ShowMessageBox();
-            }
-        }
+        //        if( !args.Processed )
+        //            new J4JMessageBox().Title( "Problem Encountered" )
+        //                .Message( args.Message )
+        //                .ButtonText( "Okay" )
+        //                .ShowMessageBox();
+        //    }
+        //}
 
-        protected virtual void OnCancelInstallation()
-        {
-            EventHandler handler = CancelAction;
+        //protected virtual void OnCancelInstallation()
+        //{
+        //    EventHandler handler = CancelAction;
 
-            if( handler != null )
-            {
-                handler.Invoke( this, EventArgs.Empty );
+        //    if( handler != null )
+        //    {
+        //        handler.Invoke( this, EventArgs.Empty );
 
-                new J4JMessageBox().Title( "Installation Message" )
-                    .Message( "Cancellation requested" )
-                    .ButtonText( "Okay" )
-                    .ShowMessageBox();
-            }
-        }
+        //        new J4JMessageBox().Title( "Installation Message" )
+        //            .Message( "Cancellation requested" )
+        //            .ButtonText( "Okay" )
+        //            .ShowMessageBox();
+        //    }
+        //}
+
+        //protected virtual void OnFinished()
+        //{
+        //    EventHandler handler = Finished;
+        //    handler?.Invoke( this, EventArgs.Empty );
+        //}
 
         public virtual void OnInstallationComplete()
         {
-        }
-
-        protected virtual void OnFinished()
-        {
-            EventHandler handler = Finished;
-            handler?.Invoke( this, EventArgs.Empty );
         }
 
         protected string GetEmbeddedTextFile(string fileName, string ns = null)
@@ -208,7 +210,7 @@ namespace Olbert.Wix.ViewModels
                         .DefaultButton( 1 )
                         .ButtonText( "Yes", "No" );
 
-                    if (msgBox.ShowMessageBox() == 1) OnCancelInstallation();
+                    if (msgBox.ShowMessageBox() == 1) WixApp.CancelInstallation();
 
                     break;
 

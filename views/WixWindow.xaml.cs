@@ -1,4 +1,8 @@
-﻿using System.Windows;
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Windows;
 
 namespace Olbert.Wix.views
 {
@@ -7,9 +11,41 @@ namespace Olbert.Wix.views
     /// </summary>
     public partial class WixWindow : Window
     {
+        private const string ResourceDll = "Olbert.JumpForJoy.DefaultResources";
+
         public WixWindow()
         {
             InitializeComponent();
+
+            try
+            {
+                var resDllPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"{ResourceDll}.dll");
+
+                if( File.Exists( resDllPath ) )
+                {
+                    var resAssembly = Assembly.LoadFile( resDllPath );
+                    var uriText =
+                        $"pack://application:,,,/{resAssembly.GetName().Name};component/DefaultResources.xaml";
+
+                    ResourceDictionary j4jRD =
+                        new ResourceDictionary
+                        {
+                            Source = new Uri( uriText )
+                        };
+
+                    Resources.MergedDictionaries.Add(j4jRD);
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
+        protected override void OnInitialized( EventArgs e )
+        {
+
+            // search for, and load if found, the resource dll
+            base.OnInitialized( e );
         }
     }
 }

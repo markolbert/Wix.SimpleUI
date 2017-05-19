@@ -10,7 +10,7 @@ using Serilog;
 
 namespace Olbert.Wix
 {
-    public abstract class WixApp : BootstrapperApplication
+    public abstract class WixApp : BootstrapperApplication, IWixApp
     {
         private static Dispatcher Dispatcher { get; set; }
 
@@ -22,11 +22,31 @@ namespace Olbert.Wix
             System.Diagnostics.Debugger.Launch();
         }
 
+        public virtual void CancelInstallation()
+        {
+            if (WixViewModel.InstallState == InstallState.Applying)
+                WixViewModel.InstallState = InstallState.Canceled;
+            else Dispatcher.InvokeShutdown();
+        }
+
+        public virtual void StartDetect()
+        {
+            Engine.Detect();
+        }
+
+        public abstract (bool, string) ExecuteAction( LaunchAction action );
+
+        public virtual void Finish()
+        {
+            Dispatcher.InvokeShutdown();
+        }
+
         protected override void Run()
         {
             WixViewModel.LaunchAction = Command.Action;
 
-            if( !WixViewModel.IsActionSupported( WixViewModel.LaunchAction ) )
+            if( WixViewModel.LaunchAction != LaunchAction.Unknown
+                && WixViewModel.SupportedActions.All( x => x != WixViewModel.LaunchAction ) )
             {
                 new J4JMessageBox().Title( "Action Not Supported" )
                     .Message( $"The requested action ({WixViewModel.LaunchAction}) is not supported" )
@@ -41,10 +61,10 @@ namespace Olbert.Wix
 
             Dispatcher = Dispatcher.CurrentDispatcher;
 
-            WixViewModel.CancelAction += _vm_CancelAction;
-            WixViewModel.StartDetect += _vm_StartDetect;
-            WixViewModel.Action += _vm_Action;
-            WixViewModel.Finished += _vm_Finished;
+            //WixViewModel.CancelAction += _vm_CancelAction;
+            //WixViewModel.StartDetect += _vm_StartDetect;
+            //WixViewModel.Action += _vm_Action;
+            //WixViewModel.Finished += _vm_Finished;
 
             var mainWindow = new WixWindow { DataContext = WixViewModel };
             _hwnd = new WindowInteropHelper( mainWindow ).Handle;
@@ -60,9 +80,9 @@ namespace Olbert.Wix
 
         protected abstract IWixViewModel WixViewModel { get; }
 
-        protected virtual void OnAction( EngineActionEventArgs args )
-        {
-        }
+        //protected virtual void OnAction( EngineActionEventArgs args )
+        //{
+        //}
 
         protected virtual bool CancellationRequested( ResultEventArgs args )
         {
@@ -244,29 +264,29 @@ namespace Olbert.Wix
 
         #endregion
 
-        #region viewmodel event handlers
+        //#region viewmodel event handlers
 
-        private void _vm_StartDetect(object sender, EventArgs e)
-        {
-            Engine.Detect();
-        }
+        //private void _vm_StartDetect(object sender, EventArgs e)
+        //{
+        //    Engine.Detect();
+        //}
 
-        private void _vm_Action( object sender, EngineActionEventArgs args )
-        {
-            OnAction( args );
-        }
+        //private void _vm_Action( object sender, EngineActionEventArgs args )
+        //{
+        //    OnAction( args );
+        //}
 
-        private void _vm_CancelAction( object sender, EventArgs e )
-        {
-            if( WixViewModel.InstallState == InstallState.Applying ) WixViewModel.InstallState = InstallState.Canceled;
-            else Dispatcher.InvokeShutdown();
-        }
+        //private void _vm_CancelAction( object sender, EventArgs e )
+        //{
+        //    if( WixViewModel.InstallState == InstallState.Applying ) WixViewModel.InstallState = InstallState.Canceled;
+        //    else Dispatcher.InvokeShutdown();
+        //}
 
-        private void _vm_Finished( object sender, EventArgs e )
-        {
-            Dispatcher.InvokeShutdown();
-        }
+        //private void _vm_Finished( object sender, EventArgs e )
+        //{
+        //    Dispatcher.InvokeShutdown();
+        //}
 
-        #endregion
+        //#endregion
     }
 }

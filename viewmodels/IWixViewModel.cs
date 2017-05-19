@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Windows.Controls;
 using Microsoft.Tools.WindowsInstallerXml.Bootstrapper;
 
@@ -6,14 +7,14 @@ namespace Olbert.Wix.ViewModels
 {
     public interface IWixViewModel
     {
-        event EventHandler StartDetect;
-        event EventHandler<EngineActionEventArgs> Action;
-        event EventHandler CancelAction;
-        event EventHandler Finished;
+        //event EventHandler StartDetect;
+        //event EventHandler<EngineActionEventArgs> Action;
+        //event EventHandler CancelAction;
+        //event EventHandler Finished;
 
         WixBundleProperties BundleProperties { get; }
         LaunchAction LaunchAction { get; set; }
-        bool IsActionSupported(LaunchAction action);
+        IEnumerable<LaunchAction> SupportedActions { get; }
         InstallState InstallState { get; set; }
         EngineState EngineState { get; set; }
         EnginePhase EnginePhase { get; set; }

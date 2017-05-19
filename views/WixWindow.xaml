@@ -8,7 +8,13 @@
         Title="{Binding WindowTitle}" Height="300" Width="450.667">
     
     <Window.Resources>
-        <BitmapImage x:Key="HisMajesty" UriSource="../assets/j4jtransparent.png"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary>
+                    <BitmapImage x:Key="J4JWizardImage" UriSource="../assets/install.png"/>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Window.Resources>
 
     <Grid Background="Gainsboro">
@@ -23,7 +29,7 @@
         </Grid.ColumnDefinitions>
         
         <Image Grid.Row="0" Grid.Column="0" 
-               Source="{StaticResource HisMajesty}"/>
+               Source="{DynamicResource J4JWizardImage}"/>
         
         <ContentControl Grid.Row="0" Grid.Column="1"
                         Padding="5"

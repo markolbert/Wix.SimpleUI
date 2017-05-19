@@ -60,6 +60,9 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.ValueTuple, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.3.1\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmLightLibs.5.3.0.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
@@ -111,10 +114,14 @@
     <Compile Include="CachingInfo.cs" />
     <Compile Include="EngineState.cs" />
     <Compile Include="ExecutionInfo.cs" />
+    <Compile Include="IWixApp.cs" />
     <Compile Include="messages\PanelButton.cs" />
     <Compile Include="messages\WixEngineCommand.cs" />
     <Compile Include="messages\PanelButtonVisibility.cs" />
     <Compile Include="NativeMethods.cs" />
+    <Compile Include="panels\WixAction.xaml.cs">
+      <DependentUpon>WixAction.xaml</DependentUpon>
+    </Compile>
     <Compile Include="panels\WixPanelAttribute.cs" />
     <Compile Include="panels\WixPanels.cs" />
     <Compile Include="panels\WixProgress.xaml.cs">
@@ -157,6 +164,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="viewmodels\panels\ActionPanelViewModel.cs" />
     <Compile Include="viewmodels\panels\DependencyPanelViewModel.cs" />
     <Compile Include="viewmodels\panels\ProgressPanelViewModel.cs" />
     <Compile Include="viewmodels\panels\IntroPanelViewModel.cs" />
@@ -189,6 +197,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="panels\WixAction.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="panels\WixProgress.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -217,13 +229,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Resource Include="views\Resources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
     <Page Include="views\WixWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="assets\j4jtransparent.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\j4jUI\j4jUI.csproj">
@@ -235,7 +248,9 @@
       <Name>WpfConverters</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="assets\install.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>rd /s /q "$(TargetDir)de"
@@ -249,6 +264,8 @@ rd /s /q "$(TargetDir)ru"
 rd /s /q "$(TargetDir)sv"
 rd /s /q "$(TargetDir)zh-Hans"
 del /s /q "$(TargetDir)*.xml"
-if $(Configuration) == Release (del /s /q "$(TargetDir)*.pdb")</PostBuildEvent>
+if $(Configuration) == Release (del /s /q "$(TargetDir)*.pdb")
+copy C:\Programming\LanHistory\J4JResources\bin\$(Configuration)\Olbert.JumpForJoy.DefaultResources.* $(TargetDir)
+</PostBuildEvent>
   </PropertyGroup>
 </Project>
