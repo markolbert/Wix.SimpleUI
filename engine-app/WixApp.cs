@@ -1,51 +1,51 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Windows.Interop;
 using System.Windows.Threading;
 using Microsoft.Tools.WindowsInstallerXml.Bootstrapper;
 using Olbert.JumpForJoy.WPF;
 using Olbert.Wix.views;
 using Olbert.Wix.ViewModels;
-using Serilog;
 
 namespace Olbert.Wix
 {
     public abstract class WixApp : BootstrapperApplication, IWixApp
     {
-        private static Dispatcher Dispatcher { get; set; }
+        private static Dispatcher _dispatcher { get; set; }
 
         private int _finalResult;
         private IntPtr _hwnd = IntPtr.Zero;
 
         protected WixApp()
         {
+            WaitForDebugger();
+        }
+
+        [ Conditional( "WAITFORDEBUGGER" ) ]
+        private void WaitForDebugger()
+        {
             System.Diagnostics.Debugger.Launch();
+
+            while( !System.Diagnostics.Debugger.IsAttached )
+            {
+                Thread.Sleep( 100 );
+            }
         }
 
-        public virtual void CancelInstallation()
-        {
-            if (WixViewModel.InstallState == InstallState.Applying)
-                WixViewModel.InstallState = InstallState.Canceled;
-            else Dispatcher.InvokeShutdown();
-        }
+        public LaunchAction LaunchAction => Command.Action;
 
-        public virtual void StartDetect()
+        public void CrossThreadAction<T>( Action<T> action, T item )
         {
-            Engine.Detect();
-        }
-
-        public abstract (bool, string) ExecuteAction( LaunchAction action );
-
-        public virtual void Finish()
-        {
-            Dispatcher.InvokeShutdown();
+            _dispatcher.BeginInvoke( action, item );
         }
 
         protected override void Run()
         {
-            WixViewModel.LaunchAction = Command.Action;
+            _dispatcher = Dispatcher.CurrentDispatcher;
 
-            if( WixViewModel.LaunchAction != LaunchAction.Unknown
+            if ( WixViewModel.LaunchAction != LaunchAction.Unknown
                 && WixViewModel.SupportedActions.All( x => x != WixViewModel.LaunchAction ) )
             {
                 new J4JMessageBox().Title( "Action Not Supported" )
@@ -58,13 +58,6 @@ namespace Olbert.Wix
 
                 return;
             }
-
-            Dispatcher = Dispatcher.CurrentDispatcher;
-
-            //WixViewModel.CancelAction += _vm_CancelAction;
-            //WixViewModel.StartDetect += _vm_StartDetect;
-            //WixViewModel.Action += _vm_Action;
-            //WixViewModel.Finished += _vm_Finished;
 
             var mainWindow = new WixWindow { DataContext = WixViewModel };
             _hwnd = new WindowInteropHelper( mainWindow ).Handle;
@@ -80,13 +73,28 @@ namespace Olbert.Wix
 
         protected abstract IWixViewModel WixViewModel { get; }
 
-        //protected virtual void OnAction( EngineActionEventArgs args )
-        //{
-        //}
-
-        protected virtual bool CancellationRequested( ResultEventArgs args )
+        public virtual void StartDetect()
         {
-            if( WixViewModel.InstallState == InstallState.Canceled )
+            Engine.Detect();
+        }
+
+        public abstract (bool, string) ExecuteAction(LaunchAction action);
+
+        public virtual void Finish()
+        {
+            _dispatcher.InvokeShutdown();
+        }
+
+        public virtual void CancelInstallation()
+        {
+            if (WixViewModel.InstallState == InstallState.Applying)
+                WixViewModel.InstallState = InstallState.Canceled;
+            else _dispatcher.InvokeShutdown();
+        }
+
+        protected virtual bool CancellationRequested(ResultEventArgs args)
+        {
+            if (WixViewModel.InstallState == InstallState.Canceled)
             {
                 args.Result = Result.Cancel;
                 return true;
@@ -148,7 +156,7 @@ namespace Olbert.Wix
         {
             WixViewModel.EngineState = EngineState.PlanningComplete;
 
-            if( WixViewModel.InstallState == InstallState.Canceled ) Dispatcher.InvokeShutdown();
+            if( WixViewModel.InstallState == InstallState.Canceled ) _dispatcher.InvokeShutdown();
             else
             {
                 WixViewModel.ReportProgress("Beginning installation");
@@ -196,7 +204,7 @@ namespace Olbert.Wix
         {
             WixViewModel.EngineState = EngineState.ApplyingCached;
 
-            if( WixViewModel.InstallState == InstallState.Canceled ) Dispatcher.InvokeShutdown();
+            if( WixViewModel.InstallState == InstallState.Canceled ) _dispatcher.InvokeShutdown();
             else WixViewModel.ReportProgress("Package download complete");
 
             base.OnCacheComplete( args );
@@ -212,7 +220,6 @@ namespace Olbert.Wix
             {
                 WixViewModel.EngineState = EngineState.ApplyingExecuting;
                 WixViewModel.EnginePhase = EnginePhase.Executing;
-                WixViewModel.ReportProgress("Installing packages");
             }
 
             base.OnExecuteBegin( args );
@@ -225,7 +232,7 @@ namespace Olbert.Wix
                 var package = WixViewModel.BundleProperties.Packages.SingleOrDefault(
                     pkg => pkg.Package.Equals( args.PackageId, StringComparison.OrdinalIgnoreCase ) );
 
-                if( package != null ) WixViewModel.ReportProgress( $"Installing {package.DisplayName}" );
+                if( package != null ) WixViewModel.ReportProgress( $"Working on {package.DisplayName}" );
             }
 
             base.OnExecutePackageBegin( args );
@@ -243,7 +250,10 @@ namespace Olbert.Wix
         {
             if( !CancellationRequested( args ) )
             {
-                WixViewModel.ReportProgress("Installation complete");
+                var package = WixViewModel.BundleProperties.Packages.SingleOrDefault(
+                    pkg => pkg.Package.Equals(args.PackageId, StringComparison.OrdinalIgnoreCase));
+
+                if( package != null ) WixViewModel.ReportProgress( $"Finished with {package.DisplayName}" );
                 WixViewModel.OnInstallationComplete();
             }
 
@@ -263,30 +273,5 @@ namespace Olbert.Wix
         }
 
         #endregion
-
-        //#region viewmodel event handlers
-
-        //private void _vm_StartDetect(object sender, EventArgs e)
-        //{
-        //    Engine.Detect();
-        //}
-
-        //private void _vm_Action( object sender, EngineActionEventArgs args )
-        //{
-        //    OnAction( args );
-        //}
-
-        //private void _vm_CancelAction( object sender, EventArgs e )
-        //{
-        //    if( WixViewModel.InstallState == InstallState.Applying ) WixViewModel.InstallState = InstallState.Canceled;
-        //    else Dispatcher.InvokeShutdown();
-        //}
-
-        //private void _vm_Finished( object sender, EventArgs e )
-        //{
-        //    Dispatcher.InvokeShutdown();
-        //}
-
-        //#endregion
     }
 }

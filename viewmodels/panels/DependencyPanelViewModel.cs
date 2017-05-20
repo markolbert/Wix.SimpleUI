@@ -1,14 +1,5 @@
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Windows;
 using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Messaging;
-using Microsoft.Tools.WindowsInstallerXml.Bootstrapper;
-using Olbert.Wix.messages;
-using Olbert.Wix.viewmodels;
 
 namespace Olbert.Wix.ViewModels
 {

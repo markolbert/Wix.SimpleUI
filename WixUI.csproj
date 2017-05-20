@@ -19,7 +19,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;WAITFORDEBUGGER</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -111,14 +111,12 @@
     <Compile Include="buttons\WixStandardButtons.xaml.cs">
       <DependentUpon>WixStandardButtons.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CachingInfo.cs" />
-    <Compile Include="EngineState.cs" />
-    <Compile Include="ExecutionInfo.cs" />
-    <Compile Include="IWixApp.cs" />
+    <Compile Include="engine-app\EnginePhase.cs" />
+    <Compile Include="engine-app\EngineState.cs" />
+    <Compile Include="engine-app\IWixApp.cs" />
     <Compile Include="messages\PanelButton.cs" />
     <Compile Include="messages\WixEngineCommand.cs" />
     <Compile Include="messages\PanelButtonVisibility.cs" />
-    <Compile Include="NativeMethods.cs" />
     <Compile Include="panels\WixAction.xaml.cs">
       <DependentUpon>WixAction.xaml</DependentUpon>
     </Compile>
@@ -140,7 +138,6 @@
       <DependentUpon>WixIntro.xaml</DependentUpon>
     </Compile>
     <Compile Include="viewmodels\CurrentPanelInfo.cs" />
-    <Compile Include="viewmodels\EngineActionEventArgs.cs" />
     <Compile Include="viewmodels\buttons\FluentButtons.cs" />
     <Compile Include="viewmodels\InstallationState.cs" />
     <Compile Include="viewmodels\IWixViewModel.cs" />
@@ -168,7 +165,7 @@
     <Compile Include="viewmodels\panels\DependencyPanelViewModel.cs" />
     <Compile Include="viewmodels\panels\ProgressPanelViewModel.cs" />
     <Compile Include="viewmodels\panels\IntroPanelViewModel.cs" />
-    <Compile Include="WixApp.cs" />
+    <Compile Include="engine-app\WixApp.cs" />
     <Compile Include="viewmodels\InstallState.cs" />
     <Compile Include="viewmodels\panels\FinishPanelViewModel.cs" />
     <Compile Include="viewmodels\panels\LicensePanelViewModel.cs" />
@@ -229,10 +226,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Resource Include="views\Resources.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Resource>
     <Page Include="views\WixWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

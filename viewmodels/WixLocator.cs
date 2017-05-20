@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Linq;
-using System.Reflection;
-using Microsoft.Practices.ServiceLocation;
 using Serilog;
-using Serilog.Core;
 
 namespace Olbert.Wix.ViewModels
 {

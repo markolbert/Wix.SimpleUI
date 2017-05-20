@@ -14,11 +14,6 @@ namespace Olbert.Wix.ViewModels
 {
     public abstract class WixViewModel : ViewModelBase, IWixViewModel
     {
-        //public event EventHandler StartDetect;
-        //public event EventHandler<EngineActionEventArgs> Action;
-        //public event EventHandler Finished;
-        //public event EventHandler CancelAction;
-
         private InstallState _state;
         private string _windowTitle;
         private bool _bundleInstalled;
@@ -29,6 +24,7 @@ namespace Olbert.Wix.ViewModels
         {
             WixApp = wixApp ?? throw new NullReferenceException( nameof(wixApp) );
 
+            LaunchAction = WixApp.LaunchAction;
             WindowTitle = "Application Installer";
 
             BundleProperties = WixBundleProperties.Load() ??
@@ -41,11 +37,48 @@ namespace Olbert.Wix.ViewModels
 
         protected IWixApp WixApp { get; }
 
-        public WixBundleProperties BundleProperties { get; private set; }
+        public CurrentPanelInfo Current { get; } = new CurrentPanelInfo();
+
+        protected void CreatePanel(string id, string stage = null)
+        {
+            if (stage == null) stage = id;
+
+            if (!WixPanels.Instance.Contains(id.ToLower()))
+            {
+                var mesg = $"No panel defined with ID '{id}'";
+                throw new ArgumentOutOfRangeException(nameof(CreatePanel), mesg);
+            }
+
+            var panelInfo = WixPanels.Instance[id];
+
+            Current.ID = panelInfo.ID;
+            Current.Stage = stage;
+
+            Current.PanelViewModel = (PanelViewModel)Activator.CreateInstance(panelInfo.ViewModelType);
+
+            Current.Buttons = (UserControl)Activator.CreateInstance(panelInfo.ButtonsType);
+            Current.ButtonsViewModel = Current.PanelViewModel.GetButtonsViewModel();
+            Current.Buttons.DataContext = Current.ButtonsViewModel;
+
+            Current.Panel = (UserControl)Activator.CreateInstance(panelInfo.UserControlType);
+            Current.Panel.DataContext = Current.PanelViewModel;
+        }
+
+        protected abstract void MoveNext();
+
+        protected abstract void MovePrevious();
 
         public abstract IEnumerable<LaunchAction> SupportedActions { get; }
 
-        public LaunchAction LaunchAction { get; set; } = LaunchAction.Unknown;
+        public WixBundleProperties BundleProperties { get; private set; }
+
+        public bool BundleInstalled
+        {
+            get => _bundleInstalled;
+            set => Set(ref _bundleInstalled, value);
+        }
+
+        public LaunchAction LaunchAction { get; set; }
 
         public InstallState InstallState
         {
@@ -63,39 +96,6 @@ namespace Olbert.Wix.ViewModels
             set => Set( ref _windowTitle, value );
         }
 
-        public CurrentPanelInfo Current { get; } = new CurrentPanelInfo();
-
-        protected void CreatePanel( string id, string stage = null )
-        {
-            if( stage == null ) stage = id;
-
-            if( !WixPanels.Instance.Contains( id.ToLower() ) )
-            {
-                var mesg = $"No panel defined with ID '{id}'";
-                throw new ArgumentOutOfRangeException( nameof(CreatePanel), mesg );
-            }
-
-            var panelInfo = WixPanels.Instance[ id ];
-
-            Current.ID = panelInfo.ID;
-            Current.Stage = stage;
-
-            Current.PanelViewModel = (PanelViewModel) Activator.CreateInstance( panelInfo.ViewModelType );
-
-            Current.Buttons = (UserControl) Activator.CreateInstance( panelInfo.ButtonsType );
-            Current.ButtonsViewModel = Current.PanelViewModel.GetButtonsViewModel();
-            Current.Buttons.DataContext = Current.ButtonsViewModel;
-
-            Current.Panel = (UserControl) Activator.CreateInstance( panelInfo.UserControlType );
-            Current.Panel.DataContext = Current.PanelViewModel;
-        }
-
-        public bool BundleInstalled
-        {
-            get => _bundleInstalled;
-            set => Set( ref _bundleInstalled, value );
-        }
-
         public virtual void OnDetectionComplete()
         {
             EngineState = EngineState.DetectionComplete;
@@ -104,6 +104,9 @@ namespace Olbert.Wix.ViewModels
 
         public virtual void ReportProgress( string mesg )
         {
+            ProgressPanelViewModel vm = Current.PanelViewModel as ProgressPanelViewModel;
+
+            if( vm != null ) WixApp.CrossThreadAction( vm.Messages.Add, mesg );
         }
 
         public virtual void ReportProgress( int phasePct )
@@ -124,60 +127,12 @@ namespace Olbert.Wix.ViewModels
             if ( vm != null )
             {
                 vm.PhasePercent = phasePct;
-                vm.OverallPercent = ( _cachePct + _exePct ) / 2;
+
+                var totalPct = _cachePct + _exePct;
+                if( LaunchAction == LaunchAction.Install ) totalPct /= 2;
+                vm.OverallPercent = totalPct;
             }
         }
-
-        protected PanelViewModel CurrentPanelViewModel { get; set; }
-
-        protected abstract void MoveNext();
-
-        protected abstract void MovePrevious();
-
-        //protected virtual void OnStartDetect()
-        //{
-        //    EventHandler handler = StartDetect;
-        //    handler?.Invoke(this, EventArgs.Empty);
-        //}
-
-        //protected virtual void OnAction( LaunchAction action )
-        //{
-        //    EventHandler<EngineActionEventArgs> handler = Action;
-
-        //    if( handler != null )
-        //    {
-        //        var args = new EngineActionEventArgs { Action = action };
-
-        //        handler.Invoke( this, args );
-
-        //        if( !args.Processed )
-        //            new J4JMessageBox().Title( "Problem Encountered" )
-        //                .Message( args.Message )
-        //                .ButtonText( "Okay" )
-        //                .ShowMessageBox();
-        //    }
-        //}
-
-        //protected virtual void OnCancelInstallation()
-        //{
-        //    EventHandler handler = CancelAction;
-
-        //    if( handler != null )
-        //    {
-        //        handler.Invoke( this, EventArgs.Empty );
-
-        //        new J4JMessageBox().Title( "Installation Message" )
-        //            .Message( "Cancellation requested" )
-        //            .ButtonText( "Okay" )
-        //            .ShowMessageBox();
-        //    }
-        //}
-
-        //protected virtual void OnFinished()
-        //{
-        //    EventHandler handler = Finished;
-        //    handler?.Invoke( this, EventArgs.Empty );
-        //}
 
         public virtual void OnInstallationComplete()
         {

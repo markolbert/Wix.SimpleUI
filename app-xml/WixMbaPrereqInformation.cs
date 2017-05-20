@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GalaSoft.MvvmLight;
-using Microsoft.Tools.WindowsInstallerXml.Bootstrapper;
-using Olbert.Wix.viewmodels;
+﻿using GalaSoft.MvvmLight;
 
 namespace Olbert.Wix
 {

@@ -27,7 +27,6 @@ namespace Olbert.Wix.ViewModels
             var retVal = (StandardButtonsViewModel) base.GetButtonsViewModel();
 
             retVal.NextViewModel.Visibility = Visibility.Collapsed;
-            retVal.NextViewModel.Text = "Accepted >";
 
             return retVal;
         }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Windows;
 
@@ -39,13 +38,6 @@ namespace Olbert.Wix.views
             catch (Exception ex)
             {
             }
-        }
-
-        protected override void OnInitialized( EventArgs e )
-        {
-
-            // search for, and load if found, the resource dll
-            base.OnInitialized( e );
         }
     }
 }

@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Windows.Controls;
 using Microsoft.Tools.WindowsInstallerXml.Bootstrapper;
 
 namespace Olbert.Wix.ViewModels

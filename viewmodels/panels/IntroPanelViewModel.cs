@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using GalaSoft.MvvmLight;
 
 namespace Olbert.Wix.ViewModels
 {
