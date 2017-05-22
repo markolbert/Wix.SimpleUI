@@ -12,39 +12,29 @@
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="200">
 
-    <UserControl.Resources>
-        <conv:EmptyStringToVisibilityConverter x:Key="StringVisibilityConverter"/>
-    </UserControl.Resources>
-
     <DockPanel LastChildFill="True">
 
         <StackPanel DockPanel.Dock="Bottom"
                     Orientation="Horizontal"
-                    Visibility="{Binding LaunchAppVisible, Converter={StaticResource StringVisibilityConverter}}"
-                    Margin="5">
+                    Visibility="{Binding LaunchAppVisibility}"
+                    Margin="5,5,0,5">
             <CheckBox IsChecked="{Binding LaunchApp}"
                       VerticalAlignment="Center"
                       Margin="0,0,5,0"/>
-            <TextBlock Text="Launch App"
+            <TextBlock Text="Launch app"
                        VerticalAlignment="Center"/>
         </StackPanel>
 
         <StackPanel DockPanel.Dock="Bottom"
                     Orientation="Horizontal"
-                    Visibility="{Binding HelpUrlVisible, Converter={StaticResource StringVisibilityConverter}}"
-                    Margin="5">
-            <TextBlock>
-                <Hyperlink>
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="RequestNavigate">
-                            <command:EventToCommand Command="{Binding HelpUrlClicked, Mode=OneWay}" 
-                                                    MustToggleIsEnabledValue="True"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                    Click here for online help
-                </Hyperlink>
-            </TextBlock>
-            
+                    Visibility="{Binding ShowHelpVisibility}"
+                    Margin="5,0,0,0">
+            <CheckBox IsChecked="{Binding ShowHelp}"
+                      VerticalAlignment="Center"
+                      Margin="0,0,5,0"/>
+            <TextBlock Text="Show online help"
+                       VerticalAlignment="Center"/>
+
         </StackPanel>
 
         <TextBlock DockPanel.Dock="Top"

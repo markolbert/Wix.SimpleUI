@@ -10,15 +10,13 @@ namespace Olbert.Wix.ViewModels
     {
         private string _text;
         private bool _launchApp;
-        private bool _launchAppVisible;
-        private string _helpUrl;
-        private bool _helpUrlVisible;
+        private Visibility _launchAppVisibility = Visibility.Collapsed;
+        private bool _showHelp;
+        private Visibility _showHelpVisibility = Visibility.Collapsed;
 
         public FinishPanelViewModel()
         {
             Text = "Installation is complete. Click Finish to close the wizard.";
-
-            HelpUrlClicked = new RelayCommand(HelpUrlClickedHandler);
         }
 
         public string Text
@@ -33,32 +31,23 @@ namespace Olbert.Wix.ViewModels
             set => Set<bool>( ref _launchApp, value );
         }
 
-        public bool LaunchAppVisible
+        public Visibility LaunchAppVisibility
         {
-            get => _launchAppVisible;
-            set => Set<bool>( ref _launchAppVisible, value );
+            get => _launchAppVisibility;
+            set => Set<Visibility>( ref _launchAppVisibility, value );
         }
 
-        public string HelpUrl
+        public bool ShowHelp
         {
-            get => _helpUrl;
-
-            set
-            {
-                Set<string>( ref _helpUrl, value );
-
-                HelpUrlVisible = Uri.TryCreate( _helpUrl, UriKind.Absolute, out Uri uriResult )
-                                 && ( uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps );
-            }
+            get => _showHelp;
+            set => Set<bool>(ref _showHelp, value);
         }
 
-        public bool HelpUrlVisible
+        public Visibility ShowHelpVisibility
         {
-            get => _helpUrlVisible;
-            protected set => Set<bool>(ref _helpUrlVisible, value);
+            get => _showHelpVisibility;
+            set => Set<Visibility>(ref _showHelpVisibility, value);
         }
-
-        public RelayCommand HelpUrlClicked { get; }
 
         public override ViewModelBase GetButtonsViewModel()
         {
@@ -69,11 +58,6 @@ namespace Olbert.Wix.ViewModels
             retVal.NextViewModel.Text = "Finish";
 
             return retVal;
-        }
-
-        private void HelpUrlClickedHandler()
-        {
-            Process.Start( new ProcessStartInfo( HelpUrl ) );
         }
 
     }
