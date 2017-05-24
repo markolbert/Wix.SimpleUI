@@ -3,8 +3,16 @@
   <PropertyGroup>
     <LanguageTargets>$(MSBuildExtensionsPath)\$(VisualStudioVersion)\Bin\Microsoft.CSharp.targets</LanguageTargets>
     <TargetFramework>net462</TargetFramework>
-    <RootNamespace>Olbert.JumpForJoy.WPF</RootNamespace>
-    <AssemblyName>Olbert.JumpForJoy.UI</AssemblyName>
+    <RootNamespace>Olbert.Wix</RootNamespace>
+    <AssemblyName>Olbert.Wix.SimpleUI</AssemblyName>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Version>0.5.0</Version>
+    <Authors>Mark A. Olbert</Authors>
+    <Company>Jump for Joy Software</Company>
+    <Product>Simple Wix UI</Product>
+    <Description>a simple Wix UI for use with Wix Bootstrapper</Description>
+    <Copyright>copyright 2017 Mark A. Olbert all rights reserved</Copyright>
+    <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,11 +29,11 @@
   <ItemGroup>
     <PackageReference Include="Extended.Wpf.Toolkit" Version="3.0.0" />
     <PackageReference Include="MvvmLightLibs" Version="5.3.0" />
+    <PackageReference Include="Olbert.JumpForJoy.UI" Version="0.5.0" />
+    <PackageReference Include="Olbert.Wpf.Converters" Version="0.5.0" />
     <PackageReference Include="Serilog" Version="2.4.0" />
     <PackageReference Include="Serilog.Sinks.RollingFile" Version="3.3.0" />
     <PackageReference Include="System.ValueTuple" Version="4.3.1" />
-    <ProjectReference Include="..\..\WPFUtilities\J4JUI\J4JUI.csproj" />
-    <ProjectReference Include="..\..\WPFUtilities\WpfConverters\WpfConverters.csproj" />
     <Reference Include="BootstrapperCore">
       <HintPath>..\..\..\Program Files (x86)\WiX Toolset v3.11\SDK\BootstrapperCore.dll</HintPath>
     </Reference>
