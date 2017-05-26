@@ -48,4 +48,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
 
+  <Target Name="UpdateLocalNuget" AfterTargets="Pack">
+    <Exec Command="powershell -File c:\Programming\Scripts\StoreNugetPackages.ps1 $(ProjectDir)\bin\$(Configuration)" />
+  </Target>
+
 </Project>
