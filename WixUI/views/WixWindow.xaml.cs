@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 
@@ -10,34 +11,38 @@ namespace Olbert.Wix.views
     /// </summary>
     public partial class WixWindow : Window
     {
-        private const string ResourceDll = "Olbert.JumpForJoy.DefaultResources";
+        /// <summary>
+        /// The name of the resource DLL used to customize the message box's appearance
+        /// </summary>
+        public const string ResourceID = "Olbert.J4JResources";
 
         public WixWindow()
         {
             InitializeComponent();
 
+            // search for a custom resource directory in the file system
+            ResourceDictionary j4jRD = null;
+
             try
             {
-                var resDllPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"{ResourceDll}.dll");
+                // check the file system
+                var resDllPath = Path.Combine( AppDomain.CurrentDomain.BaseDirectory, $"{ResourceID}.dll" );
 
                 if( File.Exists( resDllPath ) )
                 {
                     var resAssembly = Assembly.LoadFile( resDllPath );
+
                     var uriText =
-                        $"pack://application:,,,/{resAssembly.GetName().Name};component/DefaultResources.xaml";
+                        $"pack://application:,,,/{ResourceID};component/DefaultResources.xaml";
 
-                    ResourceDictionary j4jRD =
-                        new ResourceDictionary
-                        {
-                            Source = new Uri( uriText )
-                        };
-
-                    Resources.MergedDictionaries.Add(j4jRD);
+                    j4jRD = new ResourceDictionary { Source = new Uri( uriText ) };
                 }
             }
-            catch (Exception ex)
+            catch( Exception ex )
             {
             }
+
+            if (j4jRD != null) Resources.MergedDictionaries.Add(j4jRD);
         }
     }
 }

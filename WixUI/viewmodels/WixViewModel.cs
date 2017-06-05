@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows.Controls;
 using GalaSoft.MvvmLight;
@@ -151,6 +153,14 @@ namespace Olbert.Wix.ViewModels
                     return reader.ReadToEnd();
                 }
             }
+        }
+
+        protected bool IsProcessRunning( string processName )
+        {
+            if( String.IsNullOrEmpty( processName ) ) return false;
+
+            return Process.GetProcesses()
+                .Any( p => p.ProcessName.Equals( processName, StringComparison.OrdinalIgnoreCase ) );
         }
 
         private void PanelButtonClickHandler(PanelButtonClick obj)
