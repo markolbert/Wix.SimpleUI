@@ -14,55 +14,47 @@ using Olbert.Wix.messages;
 namespace Olbert.Wix
 {
     /// <summary>
-    /// Follow steps 1a or 1b and then 2 to use this custom control in a XAML file.
-    ///
-    /// Step 1a) Using this custom control in a XAML file that exists in the current project.
-    /// Add this XmlNamespace attribute to the root element of the markup file where it is 
-    /// to be used:
-    ///
-    ///     xmlns:MyNamespace="clr-namespace:Olbert.Wix"
-    ///
-    ///
-    /// Step 1b) Using this custom control in a XAML file that exists in a different project.
-    /// Add this XmlNamespace attribute to the root element of the markup file where it is 
-    /// to be used:
-    ///
-    ///     xmlns:MyNamespace="clr-namespace:Olbert.Wix.buttons;assembly=Olbert.Wix.buttons"
-    ///
-    /// You will also need to add a project reference from the project where the XAML file lives
-    /// to this project and Rebuild to avoid compilation errors:
-    ///
-    ///     Right click on the target project in the Solution Explorer and
-    ///     "Add Reference"->"Projects"->[Browse to and select this project]
-    ///
-    ///
-    /// Step 2)
-    /// Go ahead and use your control in the XAML file.
-    ///
-    ///     <MyNamespace:WixButton/>
-    ///
+    /// A customization of the WPF Button class, which adds a ButtonID and a NormalBackground Brush
+    /// property, as well as a system for translating button clicks to MvvmLight Messenger messages
+    /// for use within the MvvmLight API.
     /// </summary>
     public class WixButton : Button
     {
+        /// <summary>
+        /// The button's ID
+        /// </summary>
         public static readonly DependencyProperty ButtonIDProperty =
             DependencyProperty.Register( nameof(ButtonID), typeof(string), typeof(WixButton),
                 new PropertyMetadata( String.Empty ) );
 
+        /// <summary>
+        /// The Brush used to render the button's normal (i.e., not highlighted) background
+        /// </summary>
         public static readonly DependencyProperty NormalBackgroundProperty =
             DependencyProperty.Register("NormalBackground", typeof(Brush), typeof(WixButton),
                 new PropertyMetadata(Brushes.LightGray));
 
+        /// <summary>
+        /// Creates an instance and sets up the button click event handler
+        /// </summary>
         public WixButton()
         {
             this.Click += WixButton_Click;
         }
 
+        /// <summary>
+        /// The button's ID, which should be unique
+        /// </summary>
         public string ButtonID
         {
             get => (string) GetValue( ButtonIDProperty );
             set => SetValue( ButtonIDProperty, value );
         }
 
+        /// <summary>
+        /// The Brush used to fill the button's background when it is in the normal (i.e.,
+        /// not highlighted) state
+        /// </summary>
         public Brush NormalBackground
         {
             get => (Brush) GetValue( NormalBackgroundProperty );

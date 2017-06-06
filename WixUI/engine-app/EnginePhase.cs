@@ -6,6 +6,9 @@
 
 namespace Olbert.Wix
 {
+    /// <summary>
+    /// An enum defining the state in which the Wix installer is at any point in time
+    /// </summary>
     public enum EnginePhase
     {
         NotStarted,

@@ -9,10 +9,14 @@ using System.Windows.Controls;
 namespace Olbert.Wix.buttons
 {
     /// <summary>
-    /// Interaction logic for WixStandardButtons.xaml
+    /// A WPF UserControl composed of three configurable WixButtons, typically used
+    /// to signify Previous, Next and Cancel actions selected by the user
     /// </summary>
     public partial class WixStandardButtons : UserControl
     {
+        /// <summary>
+        /// Creates an instance of the class
+        /// </summary>
         public WixStandardButtons()
         {
             InitializeComponent();

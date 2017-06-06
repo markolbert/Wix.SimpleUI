@@ -6,6 +6,9 @@
 
 namespace Olbert.Wix
 {
+    /// <summary>
+    /// Defines the kinds of packages that Wix supports
+    /// </summary>
     public enum PackageType
     {
         Exe,

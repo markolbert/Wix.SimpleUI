@@ -6,6 +6,9 @@
 
 namespace Olbert.Wix
 {
+    /// <summary>
+    /// An enum describing the state of the Wix bootstrapping engine at any point in time
+    /// </summary>
     public enum EngineState
     {
         NotStarted,

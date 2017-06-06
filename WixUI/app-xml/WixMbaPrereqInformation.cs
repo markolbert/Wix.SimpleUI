@@ -8,69 +8,32 @@ using GalaSoft.MvvmLight;
 
 namespace Olbert.Wix
 {
+    /// <summary>
+    /// Information about the prerequisites required for the installation. This is
+    /// derived from MvvmLight ViewModelBase because some of its properties need
+    /// to be accessible as dependency properties in the WPF UI.
+    /// </summary>
     public class WixMbaPrereqInformation : ViewModelBase
     {
-        //private PackageState _pkgState;
-        //private InstallationState _insState;
         private WixPackageProperties _pkgProps;
-        //private string _dispName;
 
+        /// <summary>
+        /// The package's Wix ID
+        /// </summary>
         public string PackageID { get; set; }
+
+        /// <summary>
+        /// The link to the package's licensing information
+        /// </summary>
         public string LicenseUrl { get; set; }
 
-        //public string DisplayName
-        //{
-        //    get => _dispName;
-        //    set => Set<string>( ref _dispName, value );
-        //}
-
+        /// <summary>
+        /// The WixPackageProperties for this prerequisite
+        /// </summary>
         public WixPackageProperties Properties
         {
             get => _pkgProps;
-
-            set
-            {
-                Set<WixPackageProperties>( ref _pkgProps, value );
-
-                //DisplayName = value == null ? PackageID : value.DisplayName;
-            }
+            set => Set<WixPackageProperties>( ref _pkgProps, value );
         }
-
-        //public InstallationState InstallationState
-        //{
-        //    get => _insState;
-        //    set => Set<InstallationState>( ref _insState, value );
-        //}
-
-        //public PackageState PackageState
-        //{
-        //    get => _pkgState;
-
-        //    set
-        //    {
-        //        Set<PackageState>( ref _pkgState, value );
-
-        //        switch (value)
-        //        {
-        //            case PackageState.Absent:
-        //                InstallationState = InstallationState.NotInstalled;
-        //                break;
-
-        //            case PackageState.Obsolete:
-        //            case PackageState.Superseded:
-        //                InstallationState = InstallationState.UpgradeNeeded;
-        //                break;
-
-        //            case PackageState.Cached:
-        //            case PackageState.Present:
-        //                InstallationState = InstallationState.Installed;
-        //                break;
-
-        //            default:
-        //                InstallationState = InstallationState.Detecting;
-        //                break;
-        //        }
-        //    }
-        //}
     }
 }

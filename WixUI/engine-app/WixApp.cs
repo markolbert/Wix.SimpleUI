@@ -17,6 +17,10 @@ using Olbert.Wix.ViewModels;
 
 namespace Olbert.Wix
 {
+    /// <summary>
+    /// Extends the Wix BootstrapperApplication class so that it can interact with
+    /// the SimpleUI API
+    /// </summary>
     public abstract class WixApp : BootstrapperApplication, IWixApp
     {
         private static Dispatcher _dispatcher { get; set; }
@@ -24,6 +28,10 @@ namespace Olbert.Wix
         private int _finalResult;
         private IntPtr _hwnd = IntPtr.Zero;
 
+        /// <summary>
+        /// Creates an instance of the class. When executed in Debug mode, pauses execution
+        /// until a debugger is attached.
+        /// </summary>
         protected WixApp()
         {
             WaitForDebugger();
@@ -40,13 +48,28 @@ namespace Olbert.Wix
             }
         }
 
+        /// <summary>
+        /// The action the Wix BootstrapperApplication is taking (e.g., install, uninstall)
+        /// </summary>
         public LaunchAction LaunchAction => Command.Action;
 
+        /// <summary>
+        /// Executes an action on the UI thread via Dispatcher.CurrentDispatcher, so as to avoid cross-thread exceptions
+        /// </summary>
+        /// <typeparam name="T">The Type of the parameter passed to the Action which will
+        /// be excecuted on the UI thread</typeparam>
+        /// <param name="action">the Action to be executed on the UI thread</param>
+        /// <param name="item">the parameter to be passed to the Action when it is invoked
+        /// on the UI thread</param>
         public void CrossThreadAction<T>( Action<T> action, T item )
         {
             _dispatcher.BeginInvoke( action, item );
         }
 
+        /// <summary>
+        /// Called by the Wix framework to start BootstrapperApplication execution. Creates and
+        /// displays a WPF Window (WixWindow) to provide a user interface.
+        /// </summary>
         protected override void Run()
         {
             _dispatcher = Dispatcher.CurrentDispatcher;
@@ -77,20 +100,50 @@ namespace Olbert.Wix
 
         #region main view model and extensibility points
 
+        /// <summary>
+        /// The view model for the installation, which exposes Wix functionality and properties
+        /// to the WPF user interface created by the SimpleUI framework.
+        /// 
+        /// Must be implemented in a derived class in order to tie a particular implementation
+        /// of IWixViewModel to a particular instance of IWixApp
+        /// </summary>
         protected abstract IWixViewModel WixViewModel { get; }
 
+        /// <summary>
+        /// Starts the Wix detection process by calling Engine.Detect()
+        /// </summary>
         public virtual void StartDetect()
         {
             Engine.Detect();
         }
 
+        /// <summary>
+        /// Executes a particular Wix LaunchAction.
+        /// 
+        /// This must be implemented in a derived class in order to provide a particular UI experience.
+        /// </summary>
+        /// <param name="action">the LaunchAction to execute</param>
+        /// <returns>a tuple indicating that the action succeeded or failed, and an optional
+        /// error message</returns>
         public abstract (bool, string) ExecuteAction(LaunchAction action);
 
+        /// <summary>
+        /// Closes out the Wix installer process by call Dispatcher.Current.InvokeShutdown()
+        /// </summary>
         public virtual void Finish()
         {
             _dispatcher.InvokeShutdown();
         }
 
+        /// <summary>
+        /// Cancels, or starts the cancellation of, the current Wix action. 
+        /// 
+        /// If WixViewModel.InstallState is 
+        /// InstallState.Applying, WixViewModel.InstallState is set to InstallState.Canceled.
+        /// 
+        /// If WixViewModel.InstallState is anything other than InstallState.Applying, invokes
+        /// Dispatcher.Current.InvokeShutdown().
+        /// </summary>
         public virtual void CancelInstallation()
         {
             if (WixViewModel.InstallState == InstallState.Applying)
@@ -98,6 +151,15 @@ namespace Olbert.Wix
             else _dispatcher.InvokeShutdown();
         }
 
+        /// <summary>
+        /// Checks to see if the Wix installer is in the process of being canceled. If it is,
+        /// args.Result is set to Result.Cancel to notify the event caller of the fact that the
+        /// installer is being canceled.
+        /// 
+        /// Returns true if WixViewModel.InstallState is InstallState.Canceled, false otherwise.
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
         protected virtual bool CancellationRequested(ResultEventArgs args)
         {
             if (WixViewModel.InstallState == InstallState.Canceled)
@@ -113,6 +175,11 @@ namespace Olbert.Wix
 
         #region detect phase
 
+        /// <summary>
+        /// Overrides the base implementation to capture information about the bundle being
+        /// detected and the Wix Bootstrapper engine's state.
+        /// </summary>
+        /// <param name="args">the DetectBeginEventArgs object provided to an event handler</param>
         protected override void OnDetectBegin( DetectBeginEventArgs args )
         {
             if( !CancellationRequested( args ) )
@@ -125,6 +192,10 @@ namespace Olbert.Wix
             base.OnDetectBegin( args );
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="args"></param>
         protected override void OnDetectPackageComplete( DetectPackageCompleteEventArgs args )
         {
             base.OnDetectPackageComplete( args );

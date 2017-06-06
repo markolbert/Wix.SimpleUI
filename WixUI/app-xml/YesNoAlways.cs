@@ -6,6 +6,9 @@
 
 namespace Olbert.Wix
 {
+    /// <summary>
+    /// An Enum for holding Wix YesNoAlways values
+    /// </summary>
     public enum YesNoAlways
     {
         No,
