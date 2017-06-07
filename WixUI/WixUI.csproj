@@ -6,7 +6,7 @@
     <RootNamespace>Olbert.Wix</RootNamespace>
     <AssemblyName>Olbert.Wix.SimpleUI</AssemblyName>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>0.5.0</Version>
+    <Version>0.5.1</Version>
     <Authors>Mark A. Olbert</Authors>
     <Company>Jump for Joy Software</Company>
     <Product>Simple Wix UI</Product>
