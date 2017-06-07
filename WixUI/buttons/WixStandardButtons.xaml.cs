@@ -6,7 +6,7 @@
 
 using System.Windows.Controls;
 
-namespace Olbert.Wix.buttons
+namespace Olbert.Wix.Buttons
 {
     /// <summary>
     /// A WPF UserControl composed of three configurable WixButtons, typically used

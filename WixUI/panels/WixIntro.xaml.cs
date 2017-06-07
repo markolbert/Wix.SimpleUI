@@ -7,13 +7,23 @@
 using System.Windows.Controls;
 using Olbert.Wix.ViewModels;
 
-namespace Olbert.Wix.panels
+namespace Olbert.Wix.Panels
 {
-    [ WixPanel( PanelID, typeof(IntroPanelViewModel) ) ]
+    /// <summary>
+    /// a UserControl to display introductory messages while the Wix Bootstrapper is
+    /// analyzing the system.
+    /// </summary>
+    [WixPanel( PanelID, typeof(IntroPanelViewModel) ) ]
     public partial class WixIntro : UserControl
     {
+        /// <summary>
+        /// The panel's unique ID
+        /// </summary>
         public const string PanelID = "intro";
 
+        /// <summary>
+        /// Creates an instance of the panel
+        /// </summary>
         public WixIntro()
         {
             InitializeComponent();

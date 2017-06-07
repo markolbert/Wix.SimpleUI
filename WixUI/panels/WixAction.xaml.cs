@@ -7,13 +7,23 @@
 using System.Windows.Controls;
 using Olbert.Wix.ViewModels;
 
-namespace Olbert.Wix.panels
+namespace Olbert.Wix.Panels
 {
+    /// <summary>
+    /// a UserControl for selecting what kind of Wix LaunchAction (e.g., install)
+    /// to perform
+    /// </summary>
     [WixPanel(PanelID, typeof(ActionPanelViewModel))]
     public partial class WixAction : UserControl
     {
+        /// <summary>
+        /// The panel's unique ID
+        /// </summary>
         public const string PanelID = "actions";
 
+        /// <summary>
+        /// Creates an instance of the panel
+        /// </summary>
         public WixAction()
         {
             InitializeComponent();

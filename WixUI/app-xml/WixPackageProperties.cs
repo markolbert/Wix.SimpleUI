@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using GalaSoft.MvvmLight;
 using Microsoft.Tools.WindowsInstallerXml.Bootstrapper;
-using Olbert.Wix.viewmodels;
+using Olbert.Wix.ViewModels;
 
 namespace Olbert.Wix
 {

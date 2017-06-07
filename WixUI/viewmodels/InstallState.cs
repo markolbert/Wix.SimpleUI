@@ -6,6 +6,9 @@
 
 namespace Olbert.Wix.ViewModels
 {
+    /// <summary>
+    /// An enum defining the current state of the installation process
+    /// </summary>
     public enum InstallState
     {
         Initializing,

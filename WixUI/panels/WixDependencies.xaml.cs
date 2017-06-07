@@ -7,13 +7,23 @@
 using System.Windows.Controls;
 using Olbert.Wix.ViewModels;
 
-namespace Olbert.Wix.panels
+namespace Olbert.Wix.Panels
 {
-    [ WixPanel( PanelID, typeof(DependencyPanelViewModel) ) ]
+    /// <summary>
+    /// a UserControl for displaying the prerequisites that are needed
+    /// for the installation
+    /// </summary>
+    [WixPanel( PanelID, typeof(DependencyPanelViewModel) ) ]
     public partial class WixDependencies : UserControl
     {
+        /// <summary>
+        /// The panel's unique ID
+        /// </summary>
         public const string PanelID = "dependencies";
 
+        /// <summary>
+        /// Creates an instance of the panel
+        /// </summary>
         public WixDependencies()
         {
             InitializeComponent();

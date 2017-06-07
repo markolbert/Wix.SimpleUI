@@ -9,7 +9,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using GalaSoft.MvvmLight.Messaging;
-using Olbert.Wix.messages;
 
 namespace Olbert.Wix
 {

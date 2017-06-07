@@ -4,7 +4,7 @@
 // This software is licensed under the terms of the MIT License
 // (https://opensource.org/licenses/MIT)
 
-namespace Olbert.Wix
+namespace Olbert.Wix.Deprecated
 {
     public enum PanelButton
     {

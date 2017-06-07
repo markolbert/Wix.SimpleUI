@@ -5,9 +5,8 @@
 // (https://opensource.org/licenses/MIT)
 
 using System.Windows;
-using Olbert.Wix.ViewModels;
 
-namespace Olbert.Wix.viewmodels
+namespace Olbert.Wix.ViewModels.Deprecated
 {
     public static class FluentButtons
     {

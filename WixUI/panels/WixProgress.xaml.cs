@@ -7,13 +7,23 @@
 using System.Windows.Controls;
 using Olbert.Wix.ViewModels;
 
-namespace Olbert.Wix.panels
+namespace Olbert.Wix.Panels
 {
+    /// <summary>
+    /// a UserControl to display installation progress, for both the current phase
+    /// and the overall install.
+    /// </summary>
     [WixPanel(PanelID, typeof(ProgressPanelViewModel))]
     public partial class WixProgress : UserControl
     {
+        /// <summary>
+        /// The panel's unique ID
+        /// </summary>
         public const string PanelID = "progress";
 
+        /// <summary>
+        /// Creates an instance of the panel
+        /// </summary>
         public WixProgress()
         {
             InitializeComponent();

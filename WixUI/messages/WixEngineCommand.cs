@@ -6,7 +6,7 @@
 
 using Microsoft.Tools.WindowsInstallerXml.Bootstrapper;
 
-namespace Olbert.Wix.messages
+namespace Olbert.Wix.messages.Deprecated
 {
     public class WixEngineCommand
     {

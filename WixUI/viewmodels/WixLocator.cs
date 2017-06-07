@@ -7,7 +7,7 @@
 using System;
 using Serilog;
 
-namespace Olbert.Wix.ViewModels
+namespace Olbert.Wix.ViewModels.Deprecated
 {
     public class WixLocator
     {

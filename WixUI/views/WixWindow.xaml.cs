@@ -6,14 +6,13 @@
 
 using System;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Windows;
 
 namespace Olbert.Wix.views
 {
     /// <summary>
-    /// Interaction logic for WixWindow.xaml
+    /// Defines the SimpleUI's primary window, through which various panels are displayed
     /// </summary>
     public partial class WixWindow : Window
     {

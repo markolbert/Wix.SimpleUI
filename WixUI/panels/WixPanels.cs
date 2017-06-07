@@ -10,20 +10,25 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Controls;
 
-namespace Olbert.Wix.panels
+namespace Olbert.Wix.Panels
 {
-    public class WixPanelInfo
-    {
-        public string ID { get; set; }
-        public Type UserControlType { get; set; }
-        public Type ViewModelType { get; set; }
-        public Type ButtonsType { get; set; }
-    }
-
+    /// <summary>
+    /// Defines a collection of UserControls which can be used as panels in the SimpleUI
+    /// </summary>
     public class WixPanels : KeyedCollection<string, WixPanelInfo>
     {
+        /// <summary>
+        /// The collection of SimpleUI panels defined in the solution; this is set when 
+        /// the application launches.
+        /// </summary>
         public static WixPanels Instance { get; } = new WixPanels();
 
+        /// <summary>
+        /// Creates an instance of the collection.
+        /// 
+        /// An ArgumentException is thrown if a duplicate panel ID -- defined in the panel class's 
+        /// WixPanelAttribute -- is encountered.
+        /// </summary>
         protected WixPanels()
         {
             Type baseType = typeof(UserControl);
@@ -50,6 +55,11 @@ namespace Olbert.Wix.panels
             }
         }
 
+        /// <summary>
+        /// Gets the panel's ID, in lower case form, as a key
+        /// </summary>
+        /// <param name="item">the WixPanelInfo item whose key is needed</param>
+        /// <returns>the panel's ID, in lower case form</returns>
         protected override string GetKeyForItem( WixPanelInfo item )
         {
             return item.ID.ToLower();

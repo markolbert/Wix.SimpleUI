@@ -4,8 +4,11 @@
 // This software is licensed under the terms of the MIT License
 // (https://opensource.org/licenses/MIT)
 
-namespace Olbert.Wix.viewmodels
+namespace Olbert.Wix.ViewModels
 {
+    /// <summary>
+    /// An enum defining the installation state of a package or prerequisite
+    /// </summary>
     public enum InstallationState
     {
         Detecting,
