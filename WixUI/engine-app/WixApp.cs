@@ -34,18 +34,6 @@ namespace Olbert.Wix
         /// </summary>
         protected WixApp()
         {
-            WaitForDebugger();
-        }
-
-        [ Conditional( "WAITFORDEBUGGER" ) ]
-        private void WaitForDebugger()
-        {
-            System.Diagnostics.Debugger.Launch();
-
-            while( !System.Diagnostics.Debugger.IsAttached )
-            {
-                Thread.Sleep( 100 );
-            }
         }
 
         /// <summary>
@@ -72,6 +60,8 @@ namespace Olbert.Wix
         /// </summary>
         protected override void Run()
         {
+            this.WaitForDebugger();
+
             _dispatcher = Dispatcher.CurrentDispatcher;
 
             if ( WixViewModel.LaunchAction != LaunchAction.Unknown
@@ -98,7 +88,7 @@ namespace Olbert.Wix
             Engine.Quit( _finalResult );
         }
 
-        #region main view model and extensibility points
+#region main view model and extensibility points
 
         /// <summary>
         /// The view model for the installation, which exposes Wix functionality and properties
@@ -169,9 +159,9 @@ namespace Olbert.Wix
             return false;
         }
 
-        #endregion
+#endregion
 
-        #region detect phase
+#region detect phase
 
         /// <summary>
         /// Overrides the base implementation to capture information about the bundle being
@@ -217,9 +207,9 @@ namespace Olbert.Wix
             WixViewModel.OnDetectionComplete();
         }
 
-        #endregion
+#endregion
 
-        #region planning phase
+#region planning phase
 
         /// <summary>
         /// Overrides base implementation to notify WixViewModel that the planning phase
@@ -257,9 +247,9 @@ namespace Olbert.Wix
             base.OnPlanComplete( args );
         }
 
-        #endregion
+#endregion
 
-        #region applying phase
+#region applying phase
 
         /// <summary>
         /// Overrides the base implementation to inform WixViewModel that the application
@@ -275,7 +265,7 @@ namespace Olbert.Wix
             base.OnApplyBegin( args );
         }
 
-        #region applying: caching phase
+#region applying: caching phase
 
         /// <summary>
         /// Overrides the base implementation to inform WixViewModel that caching
@@ -321,9 +311,9 @@ namespace Olbert.Wix
             base.OnCacheComplete( args );
         }
 
-        #endregion
+#endregion
 
-        #region applying: execution phase
+#region applying: execution phase
 
         /// <summary>
         /// Overrides the base implementation to inform WixViewModel that the execution phase
@@ -391,7 +381,7 @@ namespace Olbert.Wix
             base.OnExecutePackageComplete( args );
         }
 
-        #endregion
+#endregion
 
         /// <summary>
         /// Overrides the base implementation to inform WixViewModel that the apply phase
@@ -408,6 +398,6 @@ namespace Olbert.Wix
             _finalResult = args.Status;
         }
 
-        #endregion
+#endregion
     }
 }
