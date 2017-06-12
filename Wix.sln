@@ -1,9 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.6
+VisualStudioVersion = 15.0.26430.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WixUI", "WixUI\WixUI.csproj", "{9EA26E02-1396-49C1-BAF4-B651D72ECDB5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "subsidiary", "subsidiary", "{4885FC49-572D-42E5-BDD0-6EAF2C3B7563}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "J4JUI", "..\WPFUtilities\J4JUI\J4JUI.csproj", "{C10AF54B-76EC-4667-ACA2-0D005B77DA73}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfConverters", "..\WPFUtilities\WpfConverters\WpfConverters.csproj", "{486543C5-3A5A-495F-81EF-18397E5D5608}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,8 +21,20 @@ Global
 		{9EA26E02-1396-49C1-BAF4-B651D72ECDB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9EA26E02-1396-49C1-BAF4-B651D72ECDB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9EA26E02-1396-49C1-BAF4-B651D72ECDB5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C10AF54B-76EC-4667-ACA2-0D005B77DA73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C10AF54B-76EC-4667-ACA2-0D005B77DA73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C10AF54B-76EC-4667-ACA2-0D005B77DA73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C10AF54B-76EC-4667-ACA2-0D005B77DA73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{486543C5-3A5A-495F-81EF-18397E5D5608}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{486543C5-3A5A-495F-81EF-18397E5D5608}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{486543C5-3A5A-495F-81EF-18397E5D5608}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{486543C5-3A5A-495F-81EF-18397E5D5608}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C10AF54B-76EC-4667-ACA2-0D005B77DA73} = {4885FC49-572D-42E5-BDD0-6EAF2C3B7563}
+		{486543C5-3A5A-495F-81EF-18397E5D5608} = {4885FC49-572D-42E5-BDD0-6EAF2C3B7563}
 	EndGlobalSection
 EndGlobal
