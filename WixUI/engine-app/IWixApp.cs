@@ -4,7 +4,6 @@
 // This software is licensed under the terms of the MIT License
 // (https://opensource.org/licenses/MIT)
 
-using System;
 using Microsoft.Tools.WindowsInstallerXml.Bootstrapper;
 
 namespace Olbert.Wix
@@ -15,15 +14,15 @@ namespace Olbert.Wix
     /// </summary>
     public interface IWixApp
     {
-        /// <summary>
-        /// Used to execute actions on the UI thread, so as to avoid cross-thread exceptions
-        /// </summary>
-        /// <typeparam name="T">The Type of the parameter passed to the Action which will
-        /// be excecuted on the UI thread</typeparam>
-        /// <param name="action">the Action to be executed on the UI thread</param>
-        /// <param name="item">the parameter to be passed to the Action when it is invoked
-        /// on the UI thread</param>
-        void CrossThreadAction<T>( Action<T> action, T item );
+        ///// <summary>
+        ///// Used to execute actions on the UI thread, so as to avoid cross-thread exceptions
+        ///// </summary>
+        ///// <typeparam name="T">The Type of the parameter passed to the Action which will
+        ///// be excecuted on the UI thread</typeparam>
+        ///// <param name="action">the Action to be executed on the UI thread</param>
+        ///// <param name="item">the parameter to be passed to the Action when it is invoked
+        ///// on the UI thread</param>
+        //void CrossThreadAction<T>( Action<T> action, T item );
 
         /// <summary>
         /// The action the Wix BootstrapperApplication is taking (e.g., install, uninstall)

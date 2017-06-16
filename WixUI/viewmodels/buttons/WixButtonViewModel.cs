@@ -8,7 +8,6 @@ using System;
 using System.Windows;
 using System.Windows.Media;
 using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 
 namespace Olbert.Wix.ViewModels

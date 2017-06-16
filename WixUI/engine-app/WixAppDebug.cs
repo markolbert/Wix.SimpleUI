@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Tools.WindowsInstallerXml.Bootstrapper;
 using Olbert.JumpForJoy.WPF;
 
@@ -15,14 +12,23 @@ namespace Olbert.Wix
         {
             if( wixApp == null || System.Diagnostics.Debugger.IsAttached ) return;
 
+            bool debugBuild = false;
+
+#if DEBUG
+            debugBuild = true;
+#endif
+
             var args = wixApp.Command.GetCommandLineArgs();
 
-            if( args == null 
-                || args.Length == 0 
-                || !args.Any( a => a.Equals( "/debug", StringComparison.OrdinalIgnoreCase ) ) )
+            if( !debugBuild && ( args == null
+                                 || args.Length == 0
+                                 || !args.Any( a => a.Equals( "/debug", StringComparison.OrdinalIgnoreCase ) ) ) )
                 return;
 
-            new J4JMessageBox().Title( "Ahoy There!" ).Message( "About to wait for debugger" ).ButtonText( "Okay" )
+            new J4JMessageBox()
+                .Title( "Ahoy There!" )
+                .Message( "You're either running a debug build, or launched the app with the /debug flag. Click Okay to select a debugger." )
+                .ButtonText( "Okay" )
                 .ShowMessageBox();
 
             System.Diagnostics.Debugger.Launch();

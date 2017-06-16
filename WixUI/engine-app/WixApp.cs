@@ -5,9 +5,7 @@
 // (https://opensource.org/licenses/MIT)
 
 using System;
-using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using System.Windows.Interop;
 using System.Windows.Threading;
 using Microsoft.Tools.WindowsInstallerXml.Bootstrapper;
@@ -23,7 +21,7 @@ namespace Olbert.Wix
     /// </summary>
     public abstract class WixApp : BootstrapperApplication, IWixApp
     {
-        private static Dispatcher _dispatcher { get; set; }
+        public static Dispatcher Dispatcher { get; private set; }
 
         private int _finalResult;
         private IntPtr _hwnd = IntPtr.Zero;
@@ -41,18 +39,18 @@ namespace Olbert.Wix
         /// </summary>
         public LaunchAction LaunchAction => Command.Action;
 
-        /// <summary>
-        /// Executes an action on the UI thread via Dispatcher.CurrentDispatcher, so as to avoid cross-thread exceptions
-        /// </summary>
-        /// <typeparam name="T">The Type of the parameter passed to the Action which will
-        /// be excecuted on the UI thread</typeparam>
-        /// <param name="action">the Action to be executed on the UI thread</param>
-        /// <param name="item">the parameter to be passed to the Action when it is invoked
-        /// on the UI thread</param>
-        public void CrossThreadAction<T>( Action<T> action, T item )
-        {
-            _dispatcher.BeginInvoke( action, item );
-        }
+        ///// <summary>
+        ///// Executes an action on the UI thread via Dispatcher.CurrentDispatcher, so as to avoid cross-thread exceptions
+        ///// </summary>
+        ///// <typeparam name="T">The Type of the parameter passed to the Action which will
+        ///// be excecuted on the UI thread</typeparam>
+        ///// <param name="action">the Action to be executed on the UI thread</param>
+        ///// <param name="item">the parameter to be passed to the Action when it is invoked
+        ///// on the UI thread</param>
+        //public void CrossThreadAction<T>( Action<T> action, T item )
+        //{
+        //    Dispatcher.BeginInvoke( action, item );
+        //}
 
         /// <summary>
         /// Called by the Wix framework to start BootstrapperApplication execution. Creates and
@@ -62,13 +60,13 @@ namespace Olbert.Wix
         {
             this.WaitForDebugger();
 
-            _dispatcher = Dispatcher.CurrentDispatcher;
+            Dispatcher = Dispatcher.CurrentDispatcher;
 
-            if ( WixViewModel.LaunchAction != LaunchAction.Unknown
-                && WixViewModel.SupportedActions.All( x => x != WixViewModel.LaunchAction ) )
+            if ( ViewModel.LaunchAction != LaunchAction.Unknown
+                && ViewModel.SupportedActions.All( x => x != ViewModel.LaunchAction ) )
             {
                 new J4JMessageBox().Title( "Action Not Supported" )
-                    .Message( $"The requested action ({WixViewModel.LaunchAction}) is not supported" )
+                    .Message( $"The requested action ({ViewModel.LaunchAction}) is not supported" )
                     .ButtonText( "Okay" )
                     .ButtonVisibility( true, false, false )
                     .ShowMessageBox();
@@ -78,7 +76,7 @@ namespace Olbert.Wix
                 return;
             }
 
-            var mainWindow = new WixWindow { DataContext = WixViewModel };
+            var mainWindow = new WixWindow { DataContext = ViewModel };
             _hwnd = new WindowInteropHelper( mainWindow ).Handle;
 
             mainWindow.Show();
@@ -97,7 +95,7 @@ namespace Olbert.Wix
         /// Must be implemented in a derived class in order to tie a particular implementation
         /// of IWixViewModel to a particular instance of IWixApp
         /// </summary>
-        protected abstract IWixViewModel WixViewModel { get; }
+        protected abstract IWixViewModel ViewModel { get; }
 
         /// <summary>
         /// Starts the Wix detection process by calling Engine.Detect()
@@ -122,23 +120,23 @@ namespace Olbert.Wix
         /// </summary>
         public virtual void Finish()
         {
-            _dispatcher.InvokeShutdown();
+            Dispatcher.InvokeShutdown();
         }
 
         /// <summary>
         /// Cancels, or starts the cancellation of, the current Wix action. 
         /// 
-        /// If WixViewModel.InstallState is 
-        /// InstallState.Applying, WixViewModel.InstallState is set to InstallState.Canceled.
+        /// If ViewModel.InstallState is 
+        /// InstallState.Applying, ViewModel.InstallState is set to InstallState.Canceled.
         /// 
-        /// If WixViewModel.InstallState is anything other than InstallState.Applying, invokes
+        /// If ViewModel.InstallState is anything other than InstallState.Applying, invokes
         /// Dispatcher.Current.InvokeShutdown().
         /// </summary>
         public virtual void CancelInstallation()
         {
-            if (WixViewModel.InstallState == InstallState.Applying)
-                WixViewModel.InstallState = InstallState.Canceled;
-            else _dispatcher.InvokeShutdown();
+            if (ViewModel.InstallState == InstallState.Applying)
+                ViewModel.InstallState = InstallState.Canceled;
+            else Dispatcher.InvokeShutdown();
         }
 
         /// <summary>
@@ -147,10 +145,10 @@ namespace Olbert.Wix
         /// installer is being canceled.
         /// </summary>
         /// <param name="args">the event handler parameter to update</param>
-        /// <returns>true if WixViewModel.InstallState is InstallState.Canceled, false otherwise.</returns>
+        /// <returns>true if ViewModel.InstallState is InstallState.Canceled, false otherwise.</returns>
         protected virtual bool CancellationRequested( ResultEventArgs args )
         {
-            if( WixViewModel.InstallState == InstallState.Canceled )
+            if( ViewModel.InstallState == InstallState.Canceled )
             {
                 args.Result = Result.Cancel;
                 return true;
@@ -172,9 +170,9 @@ namespace Olbert.Wix
         {
             if( !CancellationRequested( args ) )
             {
-                WixViewModel.BundleInstalled = args.Installed;
-                WixViewModel.EngineState = EngineState.Detecting;
-                WixViewModel.EnginePhase = EnginePhase.Detect;
+                ViewModel.BundleInstalled = args.Installed;
+                ViewModel.EngineState = EngineState.Detecting;
+                ViewModel.EnginePhase = EnginePhase.Detect;
             }
 
             base.OnDetectBegin( args );
@@ -189,22 +187,22 @@ namespace Olbert.Wix
         {
             base.OnDetectPackageComplete( args );
 
-            var pkg = WixViewModel.BundleProperties.Packages.SingleOrDefault(
+            var pkg = ViewModel.BundleProperties.Packages.SingleOrDefault(
                 p => p.Package.Equals( args.PackageId, StringComparison.OrdinalIgnoreCase ) );
 
             if( pkg != null ) pkg.PackageState = args.State;
         }
 
         /// <summary>
-        /// Overrides the base implementation to inform WixViewModel that the detection phase
-        /// is complete by raising WixViewModel.OnDetectionComplete().
+        /// Overrides the base implementation to inform ViewModel that the detection phase
+        /// is complete by raising ViewModel.OnDetectionComplete().
         /// </summary>
         /// <param name="args">the DetectCompleteEventArgs object provided by the Wix Bootstrapper</param>
         protected override void OnDetectComplete( DetectCompleteEventArgs args )
         {
             base.OnDetectComplete( args );
 
-            WixViewModel.OnDetectionComplete();
+            ViewModel.OnDetectionComplete();
         }
 
 #endregion
@@ -212,7 +210,7 @@ namespace Olbert.Wix
 #region planning phase
 
         /// <summary>
-        /// Overrides base implementation to notify WixViewModel that the planning phase
+        /// Overrides base implementation to notify ViewModel that the planning phase
         /// has begun
         /// </summary>
         /// <param name="args">the PlanBeginEventArgs object provided by the Wix Bootstrapper</param>
@@ -220,27 +218,27 @@ namespace Olbert.Wix
         {
             if( !CancellationRequested( args ) )
             {
-                WixViewModel.EngineState = EngineState.Planning;
-                WixViewModel.EnginePhase = EnginePhase.Detect;
-                WixViewModel.ReportProgress( "Starting planning phase" );
+                ViewModel.EngineState = EngineState.Planning;
+                ViewModel.EnginePhase = EnginePhase.Detect;
+                ViewModel.ReportProgress( "Starting planning phase" );
             }
 
             base.OnPlanBegin( args );
         }
 
         /// <summary>
-        /// Overrides base implementation to notify WixViewModel that the planning phase
+        /// Overrides base implementation to notify ViewModel that the planning phase
         /// has completed
         /// </summary>
         /// <param name="args">the PlanCompleteEventArgs object provided by the Wix Bootstrapper</param>
         protected override void OnPlanComplete( PlanCompleteEventArgs args )
         {
-            WixViewModel.EngineState = EngineState.PlanningComplete;
+            ViewModel.EngineState = EngineState.PlanningComplete;
 
-            if( WixViewModel.InstallState == InstallState.Canceled ) _dispatcher.InvokeShutdown();
+            if( ViewModel.InstallState == InstallState.Canceled ) Dispatcher.InvokeShutdown();
             else
             {
-                WixViewModel.ReportProgress("Beginning installation");
+                ViewModel.ReportProgress("Beginning installation");
                 Engine.Apply( _hwnd );
             }
 
@@ -252,15 +250,15 @@ namespace Olbert.Wix
 #region applying phase
 
         /// <summary>
-        /// Overrides the base implementation to inform WixViewModel that the application
+        /// Overrides the base implementation to inform ViewModel that the application
         /// phase has begun
         /// </summary>
         /// <param name="args">the ApplyBeginEventArgs object provided by the Wix Bootstrapper</param>
         protected override void OnApplyBegin( ApplyBeginEventArgs args )
         {
-            WixViewModel.EngineState = EngineState.Applying;
-            WixViewModel.EnginePhase = EnginePhase.Caching;
-            WixViewModel.InstallState = InstallState.Applying;
+            ViewModel.EngineState = EngineState.Applying;
+            ViewModel.EnginePhase = EnginePhase.Caching;
+            ViewModel.InstallState = InstallState.Applying;
 
             base.OnApplyBegin( args );
         }
@@ -268,7 +266,7 @@ namespace Olbert.Wix
 #region applying: caching phase
 
         /// <summary>
-        /// Overrides the base implementation to inform WixViewModel that caching
+        /// Overrides the base implementation to inform ViewModel that caching
         /// downloads has begun
         /// </summary>
         /// <param name="args">the CacheBeginEventArgs object provided by the Wix Bootstrapper</param>
@@ -276,37 +274,37 @@ namespace Olbert.Wix
         {
             if( !CancellationRequested( args ) )
             {
-                WixViewModel.EngineState = EngineState.ApplyingCaching;
-                WixViewModel.ReportProgress("Downloading packages");
+                ViewModel.EngineState = EngineState.ApplyingCaching;
+                ViewModel.ReportProgress("Downloading packages");
             }
 
             base.OnCacheBegin( args );
         }
 
         /// <summary>
-        /// Overrides the base implementation to inform WixViewModel about the caching
+        /// Overrides the base implementation to inform ViewModel about the caching
         /// progress that has occurred
         /// </summary>
         /// <param name="args">the CacheAcquireProgressEventArgs object provided by the Wix Bootstrapper</param>
         protected override void OnCacheAcquireProgress( CacheAcquireProgressEventArgs args )
         {
             if( !CancellationRequested( args ) )
-                WixViewModel.ReportProgress( args.OverallPercentage );
+                ViewModel.ReportProgress( args.OverallPercentage );
 
             base.OnCacheAcquireProgress( args );
         }
 
         /// <summary>
-        /// Overrides the base implementation to inform WixViewModel that caching
+        /// Overrides the base implementation to inform ViewModel that caching
         /// has completed
         /// </summary>
         /// <param name="args">the CacheCompleteEventArgs object provided by the Wix Bootstrapper</param>
         protected override void OnCacheComplete( CacheCompleteEventArgs args )
         {
-            WixViewModel.EngineState = EngineState.ApplyingCached;
+            ViewModel.EngineState = EngineState.ApplyingCached;
 
-            if( WixViewModel.InstallState == InstallState.Canceled ) _dispatcher.InvokeShutdown();
-            else WixViewModel.ReportProgress("Package download complete");
+            if( ViewModel.InstallState == InstallState.Canceled ) Dispatcher.InvokeShutdown();
+            else ViewModel.ReportProgress("Package download complete");
 
             base.OnCacheComplete( args );
         }
@@ -316,7 +314,7 @@ namespace Olbert.Wix
 #region applying: execution phase
 
         /// <summary>
-        /// Overrides the base implementation to inform WixViewModel that the execution phase
+        /// Overrides the base implementation to inform ViewModel that the execution phase
         /// has begun
         /// </summary>
         /// <param name="args">the ExecuteBeginEventArgs object provided by the Wix Bootstrapper</param>
@@ -324,15 +322,15 @@ namespace Olbert.Wix
         {
             if( !CancellationRequested( args ) )
             {
-                WixViewModel.EngineState = EngineState.ApplyingExecuting;
-                WixViewModel.EnginePhase = EnginePhase.Executing;
+                ViewModel.EngineState = EngineState.ApplyingExecuting;
+                ViewModel.EnginePhase = EnginePhase.Executing;
             }
 
             base.OnExecuteBegin( args );
         }
 
         /// <summary>
-        /// Overrides the base implementation to inform WixViewModel that installation of
+        /// Overrides the base implementation to inform ViewModel that installation of
         /// a specific package has begun
         /// </summary>
         /// <param name="args">the ExecutePackageBeginEventArgs object provided by the Wix Bootstrapper</param>
@@ -340,30 +338,30 @@ namespace Olbert.Wix
         {
             if( !CancellationRequested( args ) )
             {
-                var package = WixViewModel.BundleProperties.Packages.SingleOrDefault(
+                var package = ViewModel.BundleProperties.Packages.SingleOrDefault(
                     pkg => pkg.Package.Equals( args.PackageId, StringComparison.OrdinalIgnoreCase ) );
 
-                if( package != null ) WixViewModel.ReportProgress( $"Working on {package.DisplayName}" );
+                if( package != null ) ViewModel.ReportProgress( $"Working on {package.DisplayName}" );
             }
 
             base.OnExecutePackageBegin( args );
         }
 
         /// <summary>
-        /// Overrides the base implementation to inform WixViewModel about the progress made
+        /// Overrides the base implementation to inform ViewModel about the progress made
         /// in the execution phase
         /// </summary>
         /// <param name="args">the ExecuteProgressEventArgs object provided by the Wix Bootstrapper</param>
         protected override void OnExecuteProgress( ExecuteProgressEventArgs args )
         {
             if( !CancellationRequested( args ) )
-                WixViewModel.ReportProgress( args.OverallPercentage );
+                ViewModel.ReportProgress( args.OverallPercentage );
 
             base.OnExecuteProgress( args );
         }
 
         /// <summary>
-        /// Overrides the base implementation to inform WixViewModel that installation of
+        /// Overrides the base implementation to inform ViewModel that installation of
         /// a specific package has completed
         /// </summary>
         /// <param name="args">the ExecutePackageCompleteEventArgs object provided by the Wix Bootstrapper</param>
@@ -371,11 +369,11 @@ namespace Olbert.Wix
         {
             if( !CancellationRequested( args ) )
             {
-                var package = WixViewModel.BundleProperties.Packages.SingleOrDefault(
+                var package = ViewModel.BundleProperties.Packages.SingleOrDefault(
                     pkg => pkg.Package.Equals(args.PackageId, StringComparison.OrdinalIgnoreCase));
 
-                if( package != null ) WixViewModel.ReportProgress( $"Finished with {package.DisplayName}" );
-                WixViewModel.OnInstallationComplete();
+                if( package != null ) ViewModel.ReportProgress( $"Finished with {package.DisplayName}" );
+                ViewModel.OnInstallationComplete();
             }
 
             base.OnExecutePackageComplete( args );
@@ -384,14 +382,14 @@ namespace Olbert.Wix
 #endregion
 
         /// <summary>
-        /// Overrides the base implementation to inform WixViewModel that the apply phase
+        /// Overrides the base implementation to inform ViewModel that the apply phase
         /// has completed
         /// </summary>
         /// <param name="args">the ApplyCompleteEventArgs object provided by the Wix Bootstrapper</param>
         protected override void OnApplyComplete( ApplyCompleteEventArgs args )
         {
-            WixViewModel.EngineState = EngineState.ApplyComplete;
-            WixViewModel.EnginePhase = EnginePhase.Finished;
+            ViewModel.EngineState = EngineState.ApplyComplete;
+            ViewModel.EnginePhase = EnginePhase.Finished;
 
             base.OnApplyComplete( args );
 

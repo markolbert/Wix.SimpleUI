@@ -9,7 +9,7 @@ using System.Windows;
 namespace Olbert.Wix.ViewModels
 {
     /// <summary>
-    /// Extends TextPanelViewModel to define a view model for the WixIntro panel
+    /// Extends PanelViewModel to define a view model for the WixDetect panel
     /// </summary>
     public class IntroPanelViewModel : TextPanelViewModel
     {

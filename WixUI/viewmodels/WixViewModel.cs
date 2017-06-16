@@ -43,9 +43,9 @@ namespace Olbert.Wix.ViewModels
         /// <param name="wixApp">the IWixApp with which this view model needs to be integrated</param>
         protected WixViewModel( IWixApp wixApp )
         {
-            WixApp = wixApp ?? throw new NullReferenceException( nameof(wixApp) );
+            BootstrapperApp = wixApp ?? throw new NullReferenceException( nameof(wixApp) );
 
-            LaunchAction = WixApp.LaunchAction;
+            LaunchAction = BootstrapperApp.LaunchAction;
             WindowTitle = "Application Installer";
 
             BundleProperties = WixBundleProperties.Load() ??
@@ -59,7 +59,7 @@ namespace Olbert.Wix.ViewModels
         /// <summary>
         /// The IWixApp object with which this view model is integrated
         /// </summary>
-        protected IWixApp WixApp { get; }
+        protected IWixApp BootstrapperApp { get; }
 
         /// <summary>
         /// Information about the current panel being displayed by the SimpleUI
@@ -184,7 +184,8 @@ namespace Olbert.Wix.ViewModels
         {
             ProgressPanelViewModel vm = Current.PanelViewModel as ProgressPanelViewModel;
 
-            if( vm != null ) WixApp.CrossThreadAction( vm.Messages.Add, mesg );
+            if( vm != null )
+                WixApp.Dispatcher.BeginInvoke( (Action<string>) vm.Messages.Add, mesg );
         }
 
         /// <summary>
@@ -278,7 +279,7 @@ namespace Olbert.Wix.ViewModels
                         .DefaultButton( 1 )
                         .ButtonText( "Yes", "No" );
 
-                    if (msgBox.ShowMessageBox() == 1) WixApp.CancelInstallation();
+                    if (msgBox.ShowMessageBox() == 1) BootstrapperApp.CancelInstallation();
 
                     break;
 

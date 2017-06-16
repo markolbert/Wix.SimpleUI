@@ -4,8 +4,6 @@
 // This software is licensed under the terms of the MIT License
 // (https://opensource.org/licenses/MIT)
 
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using GalaSoft.MvvmLight;
