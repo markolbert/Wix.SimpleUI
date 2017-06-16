@@ -5,7 +5,7 @@
     <TargetFramework>net462</TargetFramework>
     <RootNamespace>Olbert.Wix</RootNamespace>
     <AssemblyName>Olbert.Wix.SimpleUI</AssemblyName>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild Condition="'$(Configuration)' == 'Release'">True</GeneratePackageOnBuild>
     <Version>0.5.1</Version>
     <Authors>Mark A. Olbert</Authors>
     <Company>Jump for Joy Software</Company>
@@ -54,8 +54,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
 
+  <!-- removed 6/16/2017 because the local nuget cache is no longer used
   <Target Name="UpdateLocalNuget" AfterTargets="Pack">
     <Exec Command="powershell -File c:\Programming\Scripts\StoreNugetPackages.ps1 $(ProjectDir)\bin\$(Configuration)" />
   </Target>
-
+  -->
 </Project>
