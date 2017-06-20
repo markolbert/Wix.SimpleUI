@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.12
+VisualStudioVersion = 15.0.26430.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WixUI", "WixUI\WixUI.csproj", "{9EA26E02-1396-49C1-BAF4-B651D72ECDB5}"
 EndProject
@@ -10,6 +10,12 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "J4JUI", "..\WPFUtilities\J4JUI\J4JUI.csproj", "{C10AF54B-76EC-4667-ACA2-0D005B77DA73}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfConverters", "..\WPFUtilities\WpfConverters\WpfConverters.csproj", "{486543C5-3A5A-495F-81EF-18397E5D5608}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{84B9AD90-5704-47D5-B036-5867657CA21F}"
+	ProjectSection(SolutionItems) = preProject
+		license.md = license.md
+		readme.md = readme.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

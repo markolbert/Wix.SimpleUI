@@ -1,4 +1,4 @@
-﻿# Lan History Manager License
+﻿# Wix.SimpleUI License
 
 Copyright 2017 Mark A. Olbert
 
