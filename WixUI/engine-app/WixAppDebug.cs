@@ -25,17 +25,20 @@ namespace Olbert.Wix
                                  || !args.Any( a => a.Equals( "/debug", StringComparison.OrdinalIgnoreCase ) ) ) )
                 return;
 
-            new J4JMessageBox()
+            var response = new J4JMessageBox()
                 .Title( "Ahoy There!" )
                 .Message( "You're either running a debug build, or launched the app with the /debug flag. Click Okay to select a debugger." )
-                .ButtonText( "Okay" )
+                .ButtonText( "Okay", "Skip" )
                 .ShowMessageBox();
 
-            System.Diagnostics.Debugger.Launch();
-
-            while( !System.Diagnostics.Debugger.IsAttached )
+            if( response == 0 )
             {
-                Thread.Sleep( 100 );
+                System.Diagnostics.Debugger.Launch();
+
+                while( !System.Diagnostics.Debugger.IsAttached )
+                {
+                    Thread.Sleep( 100 );
+                }
             }
         }
     }

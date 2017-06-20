@@ -14,25 +14,10 @@ namespace Olbert.Wix
     /// </summary>
     public interface IWixApp
     {
-        ///// <summary>
-        ///// Used to execute actions on the UI thread, so as to avoid cross-thread exceptions
-        ///// </summary>
-        ///// <typeparam name="T">The Type of the parameter passed to the Action which will
-        ///// be excecuted on the UI thread</typeparam>
-        ///// <param name="action">the Action to be executed on the UI thread</param>
-        ///// <param name="item">the parameter to be passed to the Action when it is invoked
-        ///// on the UI thread</param>
-        //void CrossThreadAction<T>( Action<T> action, T item );
-
         /// <summary>
         /// The action the Wix BootstrapperApplication is taking (e.g., install, uninstall)
         /// </summary>
         LaunchAction LaunchAction { get; }
-
-        /// <summary>
-        /// Cancels the current installation, and shuts down the Wix Bootstrapper application
-        /// </summary>
-        void CancelInstallation();
 
         /// <summary>
         /// Starts the Wix BootstrapperApplication's detection phase, where it determines what packages
@@ -47,10 +32,5 @@ namespace Olbert.Wix
         /// <returns>a tuple indicating that the action succeeded or failed, and an optional
         /// error message</returns>
         (bool, string) ExecuteAction( LaunchAction action );
-
-        /// <summary>
-        /// Completes the Wix BootstrapperApplication's action and terminates it.
-        /// </summary>
-        void Finish();
     }
 }

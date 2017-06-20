@@ -279,7 +279,7 @@ namespace Olbert.Wix.ViewModels
                         .DefaultButton( 1 )
                         .ButtonText( "Yes", "No" );
 
-                    if (msgBox.ShowMessageBox() == 1) BootstrapperApp.CancelInstallation();
+                    if (msgBox.ShowMessageBox() == 0) WixApp.Dispatcher.InvokeShutdown();
 
                     break;
 

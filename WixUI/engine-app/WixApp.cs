@@ -115,29 +115,29 @@ namespace Olbert.Wix
         /// error message</returns>
         public abstract (bool, string) ExecuteAction(LaunchAction action);
 
-        /// <summary>
-        /// Closes out the Wix installer process by call Dispatcher.Current.InvokeShutdown()
-        /// </summary>
-        public virtual void Finish()
-        {
-            Dispatcher.InvokeShutdown();
-        }
+        ///// <summary>
+        ///// Closes out the Wix installer process by call Dispatcher.Current.InvokeShutdown()
+        ///// </summary>
+        //public virtual void Finish()
+        //{
+        //    Dispatcher.InvokeShutdown();
+        //}
 
-        /// <summary>
-        /// Cancels, or starts the cancellation of, the current Wix action. 
-        /// 
-        /// If ViewModel.InstallState is 
-        /// InstallState.Applying, ViewModel.InstallState is set to InstallState.Canceled.
-        /// 
-        /// If ViewModel.InstallState is anything other than InstallState.Applying, invokes
-        /// Dispatcher.Current.InvokeShutdown().
-        /// </summary>
-        public virtual void CancelInstallation()
-        {
-            if (ViewModel.InstallState == InstallState.Applying)
-                ViewModel.InstallState = InstallState.Canceled;
-            else Dispatcher.InvokeShutdown();
-        }
+        ///// <summary>
+        ///// Cancels, or starts the cancellation of, the current Wix action. 
+        ///// 
+        ///// If ViewModel.InstallState is 
+        ///// InstallState.Applying, ViewModel.InstallState is set to InstallState.Canceled.
+        ///// 
+        ///// If ViewModel.InstallState is anything other than InstallState.Applying, invokes
+        ///// Dispatcher.Current.InvokeShutdown().
+        ///// </summary>
+        //public virtual void CancelInstallation()
+        //{
+        //    if (ViewModel.InstallState == InstallState.Applying)
+        //        ViewModel.InstallState = InstallState.Canceled;
+        //    else Dispatcher.InvokeShutdown();
+        //}
 
         /// <summary>
         /// Checks to see if the Wix installer is in the process of being canceled. If it is,
